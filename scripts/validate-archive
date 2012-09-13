@@ -1,0 +1,55 @@
+#!/bin/sh
+
+set -e
+set -u
+
+fatal () {
+    echo "$@" >&2
+    exit 1
+}
+
+archive="$1"
+shift
+
+if ! [ -f "$archive" ]; then
+    fatal "No such file: $archive"
+fi
+
+
+ok=0
+
+for item in "$@"; do
+    oIFS="$IFS"; IFS=':'
+    set -- $item
+    m="$1"
+    v="$2"
+    IFS="$oIFS"
+    case "$m" in
+        sha1|sha256|md5)
+            printf "$m: $archive: "
+            sum=`${m}sum "$archive" | awk '{print $1}'`
+            if [ "$sum" = "$v" ]; then
+                echo "OK"
+            else
+                echo "FAILED (got:$sum, expected:$v)"
+                ok=1
+            fi
+        ;;
+        size)
+            printf "$m: $archive: "
+            size=`stat -c '%s' "$archive"`
+            if [ "$size" = "$v" ]; then
+                echo "OK"
+            else
+                echo "FAILED (got:$size, expected:$v)"
+                ok=1
+            fi
+        ;;
+        *)
+            fatal "Unsupported method: $m"
+        ;;
+    esac
+done
+
+exit $ok
+

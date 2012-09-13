@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -e
+set -u
+
+fatal () {
+    echo "$@" >&2
+    exit 1
+}
+
+archive="$1"
+url="$2"
+shift 2
+
+wget=`type -p wget || true`
+curl=`type -p curl || true`
+
+if [ -n "$wget" ]; then
+    $wget -c -O "$archive" "$url" || rm -f "$archive"
+elif [ -n "$curl" ]; then
+    $curl "$url" > "$archive" || rm -f "$archive"
+else
+    fatal "Don't know howto download"
+fi
+

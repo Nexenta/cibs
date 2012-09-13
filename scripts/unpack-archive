@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -e
+set -u
+
+fatal () {
+    echo "$@" >&2
+    exit 1
+}
+
+archive="$1"
+sourcedir="$2"
+shift 2
+
+if ! [ -f "$archive" ]; then
+    fatal "No such file: $archive"
+fi
+
+case "$archive" in
+    *.tar.*|*.t?z|*.tbz2)
+        [ -d "$sourcedir" ] || mkdir -p "$sourcedir"
+        tar xf "$archive" -C "$sourcedir" --strip=1
+    ;;
+    *)
+        fatal "Unsupported archive: $archive"
+    ;;
+esac
+
