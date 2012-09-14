@@ -131,7 +131,10 @@ check-build-dep-stamp: check-ips-build-dep-stamp
 # issue 'make d=' to skip dependency checking:
 check-ips-build-dep-stamp: d=true
 check-ips-build-dep-stamp:
-	[ -z "$d" ] || [ -z "$(build-depends)" ] || pkg list $(build-depends)
+	@[ -z "$d" ] || [ -z "$(build-depends)" ] || pkg list $(build-depends) || \
+		(echo "type '$(MAKE) build-dep' to install build dependencies"; \
+		echo "or add 'd=' to command, e. g. '$(MAKE) build d='"; \
+		false)
 	touch $@
 
 
