@@ -39,7 +39,7 @@ configure-options = \
 	--bindir="$(bindir)" \
 	--includedir="$(includedir)" \
 
-configure-%-stamp: pre-configure
+configure-%-stamp: pre-configure-stamp
 	[ -d "$(builddir)" ] || mkdir -p "$(builddir)"
 	cd "$(builddir)" && \
 		env $(configure-env) \

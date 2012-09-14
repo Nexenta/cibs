@@ -24,13 +24,17 @@
 # include guard:
 ifeq (,$(__common_mk))
 
+# Default:
+bits := 32
+
 mach := $(shell uname -p)
 mach32 :=
 mach64 := amd64
 
-workdir := $(CURDIR)/work
-sourcedir := $(workdir)/source
-destdir := $(workdir)/proto
+workdir     := $(CURDIR)/work
+sourcedir   := $(workdir)/source
+destdir.32  := $(workdir)/proto
+destdir.64  := $(workdir)/proto
 builddir.32 := $(workdir)/build/32
 builddir.64 := $(workdir)/build/64
 
@@ -66,13 +70,14 @@ includedir = $(includedir.$(bits))
 CC         = $(CC.$(bits))
 CXX        = $(CXX.$(bits))
 builddir   = $(builddir.$(bits))
+destdir    = $(destdir.$(bits))
 
 
 
 # Common targets for internal usage.
 # Some modules (e. g. 32.mk, autotools.mk) add dependencies
 # to this, for example configure with autotools
-unpack-stamp patch-stamp configure-stamp build-stamp install-stamp:
+unpack-stamp patch-stamp pre-configure-stamp configure-stamp build-stamp install-stamp:
 	touch $@
 
 # Common target to use from command line

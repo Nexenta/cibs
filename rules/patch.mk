@@ -38,7 +38,7 @@ applied-%-stamp: $(patchdir)/% unpack-stamp
 
 patch-stamp: $(patches:%=applied-%-stamp)
 
-pre-configure:: patch-stamp	
+pre-configure-stamp: patch-stamp	
 
 __patch_mk := included
 endif

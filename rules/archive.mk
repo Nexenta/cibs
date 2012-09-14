@@ -58,7 +58,7 @@ unpack-%-stamp: validate-%-stamp
 	touch $@
 
 unpack-stamp: $$(addprefix unpack-,$$(addsuffix -stamp,$$(archives) $$(archive)))
-
+pre-configure-stamp: unpack-stamp
 
 checksum:
 	@echo '# Insert this into Makefile:'
