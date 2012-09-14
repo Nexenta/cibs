@@ -59,6 +59,15 @@ unpack-%-stamp: validate-%-stamp
 
 unpack-stamp: $$(addprefix unpack-,$$(addsuffix -stamp,$$(archives) $$(archive)))
 
+
+checksum:
+	@echo '# Insert this into Makefile:'
+	@echo 'checksum := \'
+	@printf "     md5:"; md5sum "$(archive)" | awk '{print $$1 " \\"}'
+	@printf "    sha1:"; sha1sum "$(archive)" | awk '{print $$1 " \\"}'
+	@printf "  sha256:"; sha256sum "$(archive)" | awk '{print $$1 " \\"}'
+	@printf "    size:"; stat -c '%s' "$(archive)"
+
 __archive_mk := included
 endif
 
