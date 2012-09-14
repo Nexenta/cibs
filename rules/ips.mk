@@ -38,6 +38,7 @@ endif
 pkg-define = \
 -Dsummary="$(summary)" \
 -Dlicense="$(license)" \
+-Dlicense-file="$(license-file)" \
 -Dhome="$(home)" \
 -Dname="$(name)" \
 -Dversion="$(version)" \
