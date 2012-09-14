@@ -22,38 +22,24 @@
 #
 
 # include guard
-ifeq (,$(__autotools_mk))
+ifeq (,$(__patch_mk))
 
-include /usr/share/cibs/rules/common.mk
+patchdir = $(CURDIR)/patches
+patches := $(shell cd "$(patchdir)" && ls -1 | sort)
 
-
-configure := $(sourcedir)/configure
-configure-env = \
-	CC="$(CC)" \
-	CXX="$(CXX)" \
-
-
-configure-options = \
-	--prefix="$(prefix)" \
-	--libdir="$(libdir)" \
-	--bindir="$(bindir)" \
-	--includedir="$(includedir)" \
-
-configure-%-stamp: pre-configure
-	[ -d "$(builddir)" ] || mkdir -p "$(builddir)"
-	cd "$(builddir)" && \
-		env $(configure-env) \
-		$(configure) $(configure-options)
-	touch $@
-
-build-%-stamp: configure-%-stamp
-	cd "$(builddir)" && $(MAKE)
-	touch $@
-
-install-%-stamp: build-%-stamp
-	cd "$(builddir)" && $(MAKE) install DESTDIR="$(destdir)"
+# Try different path levels:
+applied-%-stamp: $(patchdir)/% unpack-stamp
+	cd "$(sourcedir)" && \
+		patch -p1 -t < $< || \
+		patch -p0 -t < $< || \
+		patch -p2 -t < $<
 	touch $@
 
 
-__autotools_mk := included
+patch-stamp: $(patches:%=applied-%-stamp)
+
+pre-configure:: patch-stamp	
+
+__patch_mk := included
 endif
+
