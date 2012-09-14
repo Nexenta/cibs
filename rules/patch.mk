@@ -25,7 +25,7 @@
 ifeq (,$(__patch_mk))
 
 patchdir = $(CURDIR)/patches
-patches := $(shell cd "$(patchdir)" && ls -1 | sort)
+patches = $(shell cd "$(patchdir)" && ls -1 | sort)
 
 # Try different path levels:
 applied-%-stamp: $(patchdir)/% unpack-stamp check-build-dep-stamp
