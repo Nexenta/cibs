@@ -87,4 +87,7 @@ clean     ::
 	rm -rf $(workdir)
 
 __common_mk := included
+
+-include /etc/cibs/cibs.conf
+
 endif
