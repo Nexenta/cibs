@@ -105,10 +105,18 @@ resolve-stamp: $(resolved-manifests)
 	touch $@
 
 publish-stamp: resolve-stamp
+	@if [ -n "$(ips-repo)" ]; then \
+	set -x; \
 	pkgsend -s $(ips-repo) publish --fmri-in-manifest \
 		$(pkg-protos) \
-		$(resolved-manifests)
-	touch $@
+		$(resolved-manifests); \
+	touch $@; \
+	else \
+	echo "Variable 'ips-repo' is not defined."; \
+	echo "Set either in config file /etc/cibs/cibs.conf,"; \
+	echo "or define in command line: $(MAKE) publish ips-repo="; \
+	false; \
+	fi
 
 publish: publish-stamp
 
