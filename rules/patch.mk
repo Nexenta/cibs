@@ -28,7 +28,7 @@ patchdir = $(CURDIR)/patches
 patches := $(shell cd "$(patchdir)" && ls -1 | sort)
 
 # Try different path levels:
-applied-%-stamp: $(patchdir)/% unpack-stamp
+applied-%-stamp: $(patchdir)/% unpack-stamp check-build-dep-stamp
 	cd "$(sourcedir)" && \
 		patch -p1 -t < $< || \
 		patch -p0 -t < $< || \

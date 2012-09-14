@@ -121,6 +121,22 @@ publish-stamp: resolve-stamp
 
 publish: publish-stamp
 
+
+check-build-dep-stamp: check-ips-build-dep-stamp
+
+# issue 'make d=' to skip dependency checking:
+check-ips-build-dep-stamp: d=true
+check-ips-build-dep-stamp:
+	[ -z "$d" ] || pkg list $(build-depends)
+	touch $@
+
+
+# Install build dependencies:
+build-dep:
+	$(root) pkg install $(build-depends)
+
+.PHONY: publish build-dep
+
 __ips_mk := included
 endif
 

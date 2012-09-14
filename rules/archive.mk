@@ -53,12 +53,12 @@ download:: download-stamp
 
 
 archive-unpacker := /usr/share/cibs/scripts/unpack-archive
-unpack-%-stamp: validate-%-stamp
+unpack-%-stamp: validate-%-stamp check-build-dep-stamp
 	$(archive-unpacker) $* $(sourcedir_$*) $(sourcedir)
 	touch $@
 
 unpack-stamp: $$(addprefix unpack-,$$(addsuffix -stamp,$$(archives) $$(archive)))
-pre-configure-stamp: unpack-stamp
+pre-configure-stamp: unpack-stamp check-build-dep-stamp
 
 checksum:
 	@echo '# Insert this into Makefile:'

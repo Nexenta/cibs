@@ -81,7 +81,7 @@ destdir    = $(destdir.$(bits))
 # Common targets for internal usage.
 # Some modules (e. g. 32.mk, autotools.mk) add dependencies
 # to this, for example configure with autotools
-unpack-stamp patch-stamp pre-configure-stamp configure-stamp build-stamp install-stamp:
+check-build-dep-stamp unpack-stamp patch-stamp pre-configure-stamp configure-stamp build-stamp install-stamp:
 	touch $@
 
 # Common target to use from command line
