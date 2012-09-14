@@ -27,6 +27,10 @@ ifeq (,$(__common_mk))
 # Default:
 bits := 32
 
+# Prepended to commands which require root privileges
+# May be overriden in /etc/cibs/cibs.conf to, for example, pfexec
+root := sudo
+
 mach := $(shell uname -p)
 mach32 :=
 mach64 := amd64
