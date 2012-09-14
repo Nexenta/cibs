@@ -110,7 +110,7 @@ publish-stamp: resolve-stamp
 	set -x; \
 	pkgsend -s $(ips-repo) publish --fmri-in-manifest \
 		$(pkg-protos) \
-		$(resolved-manifests); \
+		$(resolved-manifests) && \
 	touch $@; \
 	else \
 	echo "Variable 'ips-repo' is not defined."; \
