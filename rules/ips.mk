@@ -105,7 +105,11 @@ $(resolved-manifests): $(depend-manifests)
 resolve-stamp: $(resolved-manifests)
 	touch $@
 
-publish-stamp: resolve-stamp
+
+# For convenience - make all, before publishing
+pre-publish: resolve-stamp
+
+publish-stamp: pre-publish
 	@if [ -n "$(ips-repo)" ]; then \
 	set -x; \
 	pkgsend -s $(ips-repo) publish --fmri-in-manifest \
@@ -127,7 +131,7 @@ check-build-dep-stamp: check-ips-build-dep-stamp
 # issue 'make d=' to skip dependency checking:
 check-ips-build-dep-stamp: d=true
 check-ips-build-dep-stamp:
-	[ -z "$d" ] || pkg list $(build-depends)
+	[ -z "$d" ] || [ -z "$(build-depends)" ] || pkg list $(build-depends)
 	touch $@
 
 
@@ -135,7 +139,7 @@ check-ips-build-dep-stamp:
 build-dep:
 	$(root) pkg install $(build-depends)
 
-.PHONY: publish build-dep
+.PHONY: publish build-dep pre-publish
 
 __ips_mk := included
 endif
