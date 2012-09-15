@@ -60,7 +60,7 @@ unpack-%-stamp: validate-%-stamp check-build-dep-stamp
 unpack-stamp: $$(addprefix unpack-,$$(addsuffix -stamp,$$(archives) $$(archive)))
 pre-configure-stamp: unpack-stamp check-build-dep-stamp
 
-checksum:
+checksum: download-stamp
 	@echo '# Insert this into Makefile:'
 	@echo 'checksum := \'
 	@printf "     md5:"; md5sum "$(archive)" | awk '{print $$1 " \\"}'
