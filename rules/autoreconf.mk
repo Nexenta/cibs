@@ -32,11 +32,11 @@ build-depends += \
 	pkg:/developer/build/automake \
 
 
-autoreconf-stamp: patch-stamp
-	autoreconf -vi $(dir $(configure))
+autoreconf-stamp: patch-stamp unpack-stamp
+	autoreconf -fvi $(dir $(configure))
 	touch $@
 
-pre-configure:: autoreconf-stamp
+pre-configure-stamp: autoreconf-stamp
 
 # Public interface (tm)
 autoreconf:: autoreconf-stamp	
