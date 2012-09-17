@@ -1,0 +1,56 @@
+#
+# CDDL HEADER START
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License (the "License").
+# You may not use this file except in compliance with the License.
+#
+# You can obtain a copy of the license
+# at http://www.opensource.org/licenses/CDDL-1.0
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# When distributing Covered Code, include this CDDL HEADER in each file.
+# If applicable, add the following below this CDDL HEADER, with the
+# fields enclosed by brackets "[]" replaced with your own identifying
+# information: Portions Copyright [yyyy] [name of copyright owner]
+#
+# CDDL HEADER END
+#
+#
+# Copyright (C) 2012, Nexenta Systems, Inc. All rights reserved.
+#
+
+
+set name=pkg.fmri value=pkg:/developer/build/$(name)@$(ips_version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source_url value="$(download)"
+license $(license-file)  license="$(license)"
+
+dir path=usr
+dir path=usr/share
+dir path=usr/share/libtool
+dir path=usr/share/libtool/config
+dir path=usr/share/info
+dir path=usr/share/aclocal
+dir path=usr/bin
+file path=usr/share/libtool/config/config.guess
+file path=usr/share/libtool/config/missing
+file path=usr/share/libtool/config/depcomp
+file path=usr/share/libtool/config/compile
+file path=usr/share/libtool/config/install-sh
+file path=usr/share/libtool/config/ltmain.sh
+file path=usr/share/libtool/config/config.sub
+file path=usr/share/info/libtool.info
+file path=usr/share/info/libtool.info-1
+file path=usr/share/aclocal/ltoptions.m4
+file path=usr/share/aclocal/ltversion.m4
+file path=usr/share/aclocal/lt~obsolete.m4
+file path=usr/share/aclocal/ltdl.m4
+file path=usr/share/aclocal/libtool.m4
+file path=usr/share/aclocal/argz.m4
+file path=usr/share/aclocal/ltsugar.m4
+file path=usr/bin/libtool
+file path=usr/bin/libtoolize
+
