@@ -21,9 +21,14 @@
 # Copyright (C) 2012, Nexenta Systems, Inc. All rights reserved.
 #
 
+ifeq (,$(__64_mk))
 
 build-stamp     : build-64-stamp
 configure-stamp : configure-64-stamp
 install-stamp   : install-64-stamp
 
 %-64-stamp: bits = 64
+
+__64_mk := included
+
+endif

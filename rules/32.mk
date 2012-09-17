@@ -21,9 +21,15 @@
 # Copyright (C) 2012, Nexenta Systems, Inc. All rights reserved.
 #
 
+ifeq (,$(__32_mk))
 
 build-stamp     : build-32-stamp
 configure-stamp : configure-32-stamp
 install-stamp   : install-32-stamp
 
 %-32-stamp: bits = 32
+
+__32_mk := included
+
+endif
+
