@@ -37,8 +37,8 @@ mach64 := amd64
 
 workdir     := $(CURDIR)/work
 sourcedir   := $(workdir)/source
-destdir.32  := $(workdir)/proto
-destdir.64  := $(workdir)/proto
+destdir.32  := $(workdir)/proto/32
+destdir.64  := $(workdir)/proto/64
 builddir.32 := $(workdir)/build/32
 builddir.64 := $(workdir)/build/64
 
@@ -64,7 +64,7 @@ includedir.32 = /usr/include
 includedir.64 = /usr/include
 
 PKG_CONFIG_PATH.32 = /usr/gnu/lib/$(mach32)/pkg-config:/usr/lib/$(mach32)/pkg-config
-PKG_CONFIG_PATH.64 = /usr/gnu/lib/$(mach64)/pkg-config:/usr/lib/$(mach.64)/pkg-config
+PKG_CONFIG_PATH.64 = /usr/gnu/lib/$(mach64)/pkg-config:/usr/lib/$(mach64)/pkg-config
 export PKG_CONFIG_PATH = PKG_CONFIG_PATH.$(bits)
 
 # $(bits) are target-specific and defined in 32.mk or 64.mk
