@@ -42,7 +42,7 @@
     default facet.devel true>
 
 # autoconf macros
-<transform dir file link hardlink path=.*/aclocal(/.*\.m4){0,1}$ -> \
+<transform dir file link hardlink path=.*/share/aclocal(/.*\.m4){0,1}$ -> \
     default facet.devel true>
 
 # Developer documentation
