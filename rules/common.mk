@@ -41,6 +41,8 @@ destdir.32  := $(workdir)/proto/32
 destdir.64  := $(workdir)/proto/64
 builddir.32 := $(workdir)/build/32
 builddir.64 := $(workdir)/build/64
+destdir.noarch  := $(workdir)/proto/noarch
+builddir.noarch := $(workdir)/build/noarch
 
 CC.32  = gcc -m32
 CC.64  = gcc -m64
@@ -62,6 +64,9 @@ bindir.32 = $(prefix)/bin/$(mach32)
 bindir.64 = $(prefix)/bin/$(mach64)
 includedir.32 = /usr/include
 includedir.64 = /usr/include
+libdir.noarch = $(prefix)/lib
+bindir.noarch = $(prefix)/bin
+includedir.noarch = /usr/include
 
 PKG_CONFIG_PATH.32 = /usr/gnu/lib/$(mach32)/pkg-config:/usr/lib/$(mach32)/pkg-config
 PKG_CONFIG_PATH.64 = /usr/gnu/lib/$(mach64)/pkg-config:/usr/lib/$(mach64)/pkg-config

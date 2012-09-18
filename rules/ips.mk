@@ -56,6 +56,7 @@ pkg-define += \
 # Where to find files:
 pkg-protos =  -d "$(destdir.32)"
 pkg-protos += -d "$(destdir.64)"
+pkg-protos += -d "$(destdir.noarch)"
 pkg-protos += -d "$(sourcedir)" -d .
 
 transformations := \
@@ -95,6 +96,7 @@ mogrify-stamp: $(mogrified-manifests)
 protodirs-stamp:
 	[ -d "$(destdir.32)" ] || mkdir -p "$(destdir.32)"
 	[ -d "$(destdir.64)" ] || mkdir -p "$(destdir.64)"
+	[ -d "$(destdir.noarch)" ] || mkdir -p "$(destdir.noarch)"
 	touch $@
 
 depend-manifests := $(manifests:%=$(manifestdir)/depend-%)
