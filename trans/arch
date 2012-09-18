@@ -1,0 +1,9 @@
+
+<transform dir file link hardlink path=.*/amd64/.* -> \
+    default facet.arch.64 true>
+
+<transform dir file link hardlink path=.*/lib/[^/]*\.(so|a|la).* -> \
+    default facet.arch.32 true>
+
+<transform dir file link hardlink path=.*/.?bin/i86/.* -> \
+    default facet.arch.32 true>
