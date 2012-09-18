@@ -39,7 +39,7 @@ validate-%-stamp: download-%-stamp
 
 validate-stamp: $$(addprefix validate-,$$(addsuffix -stamp,$$(archives) $$(archive)))
 	touch $@
-validate:: validate-stamp
+validate: validate-stamp
 
 
 archive-downloader := /usr/share/cibs/scripts/download-archive
@@ -49,7 +49,7 @@ download-%-stamp:
 
 download-stamp: $$(addprefix download-,$$(addsuffix -stamp,$$(archives) $$(archive)))
 	touch $@
-download:: download-stamp
+download: download-stamp
 
 
 archive-unpacker := /usr/share/cibs/scripts/unpack-archive
