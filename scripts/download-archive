@@ -16,10 +16,10 @@ wget=`type -p wget || true`
 curl=`type -p curl || true`
 
 if [ -n "$wget" ]; then
-    $wget -c -O "$archive" "$url" || rm -f "$archive"
+    $wget -O "$archive" "$url" || ( rm -f "$archive"; fatal "download failed" )
 elif [ -n "$curl" ]; then
-    $curl "$url" > "$archive" || rm -f "$archive"
+    $curl -L -v "$url" > "$archive" || ( rm -f "$archive"; fatal "download failed" )
 else
-    fatal "Don't know howto download"
+    fatal "Don't know how to download"
 fi
 
