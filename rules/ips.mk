@@ -120,9 +120,9 @@ pre-publish: resolve-stamp
 publish-stamp: pre-publish protodirs-stamp
 	@if [ -n "$(ips-repo)" ]; then \
 	set -x; \
-	pkgsend -s $(ips-repo) publish --fmri-in-manifest \
-		$(pkg-protos) \
-		$(resolved-manifests) && \
+	for m in $(resolved-manifests); do \
+		pkgsend -s $(ips-repo) publish --fmri-in-manifest $(pkg-protos) $$m || exit 1; \
+	done; \
 	touch $@; \
 	else \
 	echo "Variable 'ips-repo' is not defined."; \
