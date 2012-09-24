@@ -1,9 +1,9 @@
-
-<transform dir file link hardlink path=.*/amd64/.* -> \
-    default facet.arch.64 true>
+<transform dir file link hardlink path=.*(lib|bin)/amd64(/.*|$) -> \
+    default variant.elf64 true>
 
 <transform dir file link hardlink path=.*/lib/[^/]*\.(so|a|la).* -> \
-    default facet.arch.32 true>
+    default variant.elf32 true>
 
 <transform dir file link hardlink path=.*/.?bin/i86/.* -> \
-    default facet.arch.32 true>
+    default variant.elf32 true>
+

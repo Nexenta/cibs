@@ -100,6 +100,8 @@
 <transform dir -> default mode 0755>
 
 set name=variant.arch value=$(MACH)
+set name=variant.elf32 value=true
+set name=variant.elf64 value=true
 
 #
 # Defaults for legacy metadata for SVR4 package information
