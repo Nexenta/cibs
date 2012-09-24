@@ -5,7 +5,6 @@ include /usr/share/cibs/rules/autotools.mk
 include /usr/share/cibs/rules/32.mk
 include /usr/share/cibs/rules/64.mk
 
-
 summary := Generic library support script
 license := GPL
 license-file := COPYING
