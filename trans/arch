@@ -4,6 +4,9 @@
 <transform dir file link hardlink path=.*/lib/[^/]*\.(so|a|la).* -> \
     default variant.elf32 true>
 
+<transform dir file link hardlink path=.*/lib/pkgconfig/.* -> \
+    default variant.elf32 true>
+
 <transform dir file link hardlink path=.*/.?bin/i86/.* -> \
     default variant.elf32 true>
 
