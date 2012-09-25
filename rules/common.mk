@@ -51,6 +51,7 @@ CXX.64 = g++ -m64
 
 export PATH := \
 	/usr/gcc/4.4/bin:/usr/gcc/4.3/bin:/usr/gnu/bin:/usr/sbin:/usr/bin:/sbin
+export CFLAGS = -O2
 
 # Define LOCAL_MIRROR in environment, e. g. in ~/.bash_profile:
 mirrors := $(LOCAL_MIRROR) \

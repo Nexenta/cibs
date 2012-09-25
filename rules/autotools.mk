@@ -31,6 +31,9 @@ configure := $(sourcedir)/configure
 configure-env = \
 	CC="$(CC)" \
 	CXX="$(CXX)" \
+	CFLAGS="$(CFLAGS)" \
+	CXXFLAGS="$(CXXFLAGS)" \
+	CPPFLAGS="$(CPPFLAGS)" \
 
 
 configure-options = \
