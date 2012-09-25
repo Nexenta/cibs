@@ -41,6 +41,8 @@ configure-options = \
 	--libdir="$(libdir)" \
 	--bindir="$(bindir)" \
 	--includedir="$(includedir)" \
+	--infodir=/usr/share/info \
+	--disable-static \
 
 configure-%-stamp: pre-configure-stamp
 	[ -d "$(builddir)" ] || mkdir -p "$(builddir)"

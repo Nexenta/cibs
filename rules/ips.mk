@@ -61,6 +61,7 @@ pkg-protos += -d "$(sourcedir)" -d .
 
 transformations := \
 $(transdir)/defaults \
+$(transdir)/gnu \
 $(transdir)/actuators \
 $(transdir)/devel \
 $(transdir)/docs \
