@@ -92,12 +92,14 @@ check-build-dep-stamp unpack-stamp patch-stamp pre-configure-stamp configure-sta
 
 # Common target to use from command line
 # or in component top-level Makefile:
-unpack    :: unpack-stamp
-patch     :: patch-stamp
-configure :: configure-stamp
-build     :: build-stamp
-install   :: install-stamp
-clean     :: 
+unpack    : unpack-stamp
+patch     : patch-stamp
+configure : configure-stamp
+build     : build-stamp
+install   : install-stamp
+
+# clean is special and can be extended in Makefile:
+clean :: 
 	rm -f *-stamp
 	rm -rf $(workdir)
 
