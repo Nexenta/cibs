@@ -4,7 +4,7 @@ include /usr/share/cibs/rules/autotools.mk
 include /usr/share/cibs/rules/32.mk
 
 
-summary := GNU grep, egrep и fgrep
+summary := GNU grep, egrep and fgrep
 license := GPLv3
 license-file := COPYING
 
