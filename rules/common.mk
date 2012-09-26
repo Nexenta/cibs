@@ -29,7 +29,7 @@ bits := 32
 
 # Prepended to commands which require root privileges
 # May be overriden in /etc/cibs/cibs.conf to, for example, pfexec
-root := sudo
+root-cmd := sudo
 
 mach := $(shell uname -p)
 mach32 :=

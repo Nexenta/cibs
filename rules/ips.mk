@@ -149,7 +149,7 @@ check-ips-build-dep-stamp:
 
 # Install build dependencies:
 build-dep:
-	$(root) pkg install $(build-depends)
+	$(root-cmd) pkg install $(build-depends)
 
 .PHONY: publish build-dep pre-publish
 
