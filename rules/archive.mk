@@ -44,7 +44,15 @@ validate: validate-stamp
 
 archive-downloader := /usr/share/cibs/scripts/download-archive
 download-%-stamp:
-	[ -f "$*" ] || $(archive-downloader) "$*" $(download_$*) $(download)
+	if ! [ -f '$*' ]; then \
+		if [ -n '$(download_$*)' ]; then \
+		$(archive-downloader) '$*' '$(download_$*)'; \
+		elif [ -n '$(download)' ]; then \
+		$(archive-downloader) '$*' '$(download)'; \
+		else \
+		echo '** ERROR: No "dowload" variable is set'; false; \
+		fi; \
+	fi
 	touch $@
 
 download-stamp: $$(addprefix download-,$$(addsuffix -stamp,$$(archives) $$(archive)))
