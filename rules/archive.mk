@@ -43,12 +43,13 @@ validate: validate-stamp
 
 
 archive-downloader := /usr/share/cibs/scripts/download-archive
+downloader-mirrors = $(mirrors:%=-m %)
 download-%-stamp:
 	if ! [ -f '$*' ]; then \
 		if [ -n '$(download_$*)' ]; then \
-		$(archive-downloader) '$*' '$(download_$*)'; \
+		$(archive-downloader) -a '$*' $(downloader-mirrors) -d '$(download_$*)'; \
 		elif [ -n '$(download)' ]; then \
-		$(archive-downloader) '$*' '$(download)'; \
+		$(archive-downloader) -a '$*' $(downloader-mirrors) -d '$(download)'; \
 		else \
 		echo '** ERROR: No "dowload" variable is set'; false; \
 		fi; \

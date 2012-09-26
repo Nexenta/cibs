@@ -8,18 +8,49 @@ fatal () {
     exit 1
 }
 
-archive="$1"
-url="$2"
-shift 2
+archive=''
+download=''
+mirrors=''
+
+while getopts m:a:d: opt; do
+    case $opt in
+        m) mirrors="$mirrors $OPTARG";;
+        a) archive="$OPTARG";;
+        d) download="$OPTARG";;
+        *) fatal "Unknown option: $opt";;
+    esac
+done
+shift `expr $OPTIND - 1`
+
 
 wget=`type -p wget || true`
 curl=`type -p curl || true`
 
+download_wget () {
+    (set -x; $wget -O "$1" "$2") || rm -f "$1"
+}
+
+download_curl () {
+    (set -x $curl -L -v "$2" > "$1") || rm -f "$1"
+}
+
+
+download_tool=''
 if [ -n "$wget" ]; then
-    $wget -O "$archive" "$url" || ( rm -f "$archive"; fatal "download failed" )
+    download_tool=download_wget
 elif [ -n "$curl" ]; then
-    $curl -L -v "$url" > "$archive" || ( rm -f "$archive"; fatal "download failed" )
+    download_tool=download_curl
 else
     fatal "Don't know how to download"
 fi
+
+for m in $mirrors; do
+    $download_tool "$archive" "$m/$archive"
+    [ ! -e "$archive" ] || break;
+done
+
+[ -e "$archive" ] || $download_tool "$archive" "$download"
+[ -e "$archive" ] || fatal "Failed to get \`$archive'"
+
+exit 0
 

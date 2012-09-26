@@ -53,11 +53,6 @@ export PATH := \
 	/usr/gcc/4.4/bin:/usr/gcc/4.3/bin:/usr/gnu/bin:/usr/sbin:/usr/bin:/sbin
 export CFLAGS = -O2
 
-# Define LOCAL_MIRROR in environment, e. g. in ~/.bash_profile:
-mirrors := $(LOCAL_MIRROR) \
-	http://mirror.yandex.ru/gentoo-distfiles/distfiles \
-	http://mirror.ovh.net/gentoo-distfiles/distfiles
-
 prefix = /usr
 libdir.32 = $(prefix)/lib/$(mach32)
 libdir.64 = $(prefix)/lib/$(mach64)
