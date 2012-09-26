@@ -1,0 +1,30 @@
+set name=pkg.fmri value=pkg:/library/gmp@$(ips_version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source_url value="$(download)"
+
+license $(license-file) license=$(license)
+
+dir path=usr
+dir path=usr/include
+dir path=usr/lib
+dir path=usr/lib/$(MACH64)
+dir path=usr/share
+dir path=usr/share/info
+file path=usr/include/gmp.h
+file path=usr/lib/$(MACH64)/libgmp.so.10.0.5
+file path=usr/lib/libgmp.so.10.0.5
+file path=usr/share/info/gmp.info
+file path=usr/share/info/gmp.info-1
+file path=usr/share/info/gmp.info-2
+link path=usr/lib/$(MACH64)/libgmp.so target=libgmp.so.10.0.5
+link path=usr/lib/$(MACH64)/libgmp.so.10 target=libgmp.so.10.0.5
+link path=usr/lib/libgmp.so target=libgmp.so.10.0.5
+link path=usr/lib/libgmp.so.10 target=libgmp.so.10.0.5
+
+# GMP 5.0 is upwardly source and binary compatible with 4.x,
+# and 3.x versions, except for applications that use
+# the semi-documented mpn_bdivmod function.
+link path=usr/lib/$(MACH64)/libgmp.so.3 target=libgmp.so.10
+link path=usr/lib/libgmp.so.3 target=libgmp.so.10
+
