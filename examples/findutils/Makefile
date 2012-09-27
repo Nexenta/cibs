@@ -8,6 +8,8 @@ summary := GNU utilities for finding files
 license := GPLv3
 license-file := COPYING
 
+configure-options += --localstatedir=/var/cache/glocate
+
 build-depends += \
 
 prefix := /usr/gnu
