@@ -42,6 +42,7 @@ configure-options = \
 	--bindir="$(bindir)" \
 	--includedir="$(includedir)" \
 	--infodir=/usr/share/info \
+	--localstatedir=/var \
 	--disable-static \
 
 configure-%-stamp: pre-configure-stamp
