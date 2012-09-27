@@ -53,7 +53,7 @@ configure-%-stamp: pre-configure-stamp
 	touch $@
 
 build-%-stamp: configure-%-stamp
-	cd "$(builddir)" && $(MAKE)
+	cd "$(builddir)" && $(MAKE) $(make-jobs:%=-j%)
 	touch $@
 
 install-%-stamp: build-%-stamp
