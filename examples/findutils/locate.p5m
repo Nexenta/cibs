@@ -6,6 +6,8 @@ license $(license-file)  license="$(license)"
 
 depend fmri=pkg:/file/gnu-$(name)@4.4 type=require
 
+# TODO: mediators for /usr/bin/{locate,updatedb}
+
 dir path=usr
 dir path=usr/gnu
 dir path=usr/gnu/bin

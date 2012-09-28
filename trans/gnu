@@ -1,7 +1,0 @@
-<transform file path=usr/gnu/bin/(.+) -> \
-emit link path=usr/bin/g%<1> target=../gnu/bin/%<1> \
-facet.compat.gnulinks=true >
-
-<transform file path=usr/gnu/share/man/man1/(.+) -> \
-emit link path=usr/share/man/man1/g%<1> target=../../../gnu/share/man/man1/%<1> \
-facet.compat.gnulinks=true >

@@ -1,9 +1,15 @@
-
 set name=pkg.fmri value=pkg:/text/gnu-$(name)@$(ips_version)
 set name=pkg.summary value="$(summary)"
 set name=info.upstream-url value="$(home)"
 set name=info.source_url value="$(download)"
 license $(license-file)  license="$(license)"
+
+<transform file path=usr/gnu/bin/(.+) -> \
+emit link path=usr/bin/g%<1> target=../gnu/bin/%<1> >
+
+<transform file path=usr/gnu/share/man/man1/(.+) -> \
+emit link path=usr/share/man/man1/g%<1> target=../../../gnu/share/man/man1/%<1> >
+
 
 dir path=usr
 dir path=usr/gnu
