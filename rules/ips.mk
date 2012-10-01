@@ -29,8 +29,9 @@ include /usr/share/cibs/rules/common.mk
 manifestdir := $(workdir)/manifest
 transdir := /usr/share/cibs/trans
 
-ifeq (,$(ips_version))
-ips_version = $(version)
+# TODO: rewrite
+ifeq (,$(ips-version))
+ips-version = $(version)
 endif
 
 # Substitutions in IPS manifest:
@@ -42,7 +43,7 @@ pkg-define = \
 -Dhome="$(home)" \
 -Dname="$(name)" \
 -Dversion="$(version)" \
--Dips_version="$(ips_version)" \
+-Dips-version="$(ips-version)" \
 -Darchive="$(archive)" \
 -Ddownload="$(download)" \
 -Dchecksum="$(checksum)" \

@@ -1,4 +1,4 @@
-set name=pkg.fmri value=pkg:/file/gnu-$(name)@$(ips_version)
+set name=pkg.fmri value=pkg:/file/gnu-$(name)@$(ips-version)
 set name=pkg.summary value="$(summary)"
 set name=info.upstream-url value="$(home)"
 set name=info.source_url value="$(download)"

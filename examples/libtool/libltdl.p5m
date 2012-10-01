@@ -1,4 +1,4 @@
-set name=pkg.fmri value=pkg:/library/libtool/libltdl@$(ips_version)
+set name=pkg.fmri value=pkg:/library/libtool/libltdl@$(ips-version)
 set name=pkg.summary value="A system independent dlopen wrapper for GNU libtool"
 set name=info.upstream-url value="$(home)"
 set name=info.source_url value="$(download)"
