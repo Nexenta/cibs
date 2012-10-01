@@ -20,3 +20,7 @@ link path=usr/lib/$(MACH64)/libmpfr.so target=libmpfr.so.4.1.1
 link path=usr/lib/$(MACH64)/libmpfr.so.4 target=libmpfr.so.4.1.1
 link path=usr/lib/libmpfr.so target=libmpfr.so.4.1.1
 link path=usr/lib/libmpfr.so.4 target=libmpfr.so.4.1.1
+
+# Transitional links:
+link path=usr/lib/libmpfr.so.1 target=libmpfr.so.4
+link path=usr/lib/$(MACH64)/libmpfr.so.1 target=libmpfr.so.4
