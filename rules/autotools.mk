@@ -37,6 +37,7 @@ configure-env = \
 
 
 configure-options = \
+	$(configure-options.$(bits)) \
 	--prefix="$(prefix)" \
 	--libdir="$(libdir)" \
 	--bindir="$(bindir)" \

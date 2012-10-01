@@ -14,7 +14,7 @@ build-depends += \
 configure-options += --enable-cxx
 
 # http://gmplib.org/manual/ABI-and-ISA.html
-configure-options += ABI=$(bits)
+configure-options.32 += ABI=32
 
 name     := gmp
 home     := http://www.gnu.org/software/$(name)/
