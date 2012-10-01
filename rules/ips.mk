@@ -35,18 +35,10 @@ ips-version = $(version)
 endif
 
 # Substitutions in IPS manifest:
-# XXX What about to grep all variables from component makefile?
-pkg-define = \
--Dsummary="$(summary)" \
--Dlicense="$(license)" \
--Dlicense-file="$(license-file)" \
--Dhome="$(home)" \
--Dname="$(name)" \
--Dversion="$(version)" \
--Dips-version="$(ips-version)" \
--Darchive="$(archive)" \
--Ddownload="$(download)" \
--Dchecksum="$(checksum)" \
+makefile-vars := $(shell sed -n 's/^ *\([0-9a-zA-Z]*\) *[:?]*=.*$$/\1/p' Makefile | sort -u)
+pkg-define = $(foreach _,$(makefile-vars),-D$(_)="$($(_))")
+pkg-define += -Dips-version="$(ips-version)"	
+
  
 pkg-define += \
 -DMACH="$(mach)" \
