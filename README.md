@@ -31,17 +31,29 @@ and it should not be included directly, unless you are doing something really sp
 
 ### Targets provided by common.mk
 
-All targets provided by this module are abstract and do nothing. Other modules extend
-these targets. Each target (but `clean`) has its annex `target-stamp` which does
+All targets (but `clean`) provided by this module are abstract and do nothing. Other modules extend
+these targets. Each target has its annex `target-stamp` which does
 the real job. Each `*-stamp` is a file created with `touch` command. All internal
 dependencies are implemented through these "stamps", but developer can use only basename
 for target, e. g. `make unpack` instead of `make unpack-stamp`.
 
-* `unpack` - 
-* `patch` - 
-* `configure` - 
-* `build` - 
-* `install` - 
+Meaning of these targets depends on other included modules:
+
+* `unpack` - put sources into the source directory (`./work/source` by default),
+* `patch` - modify sources,
+* `configure` - configure sources, e. g. execute GNU configure or CMake,
+* `build` - build sources, e. g. compile with C compiler,
+* `install` - install files into proto directory.
+* `clean` - remove all stamps and working directory (`./work` by default)
+
+
+`clean` has [double-colon rule](http://www.gnu.org/software/make/manual/html_node/Double_002dColon.html)
+and by default it is:
+
+    clean::
+        rm -f *-stamp
+        rm -rf $(workdir)
+
 
 ## ips.mk
 
