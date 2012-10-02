@@ -16,13 +16,32 @@ Major features are:
 To create and publish an IPS package you need:
 
 * CIBS package installed (`pkg:/developer/pkg/cibs`)
-* Makefile describing what and how you are building
+* `Makefile` describing what and how you are building
 * At least one canonical IPS manifest.
  
  
 Look into directory `examples` for examples.
 
 # CIBS modules
+
+## common.mk
+
+This module defines common variables and targets. All other modules include this module,
+and it should not be included directly, unless you are doing something really special.
+
+### Targets provided by common.mk
+
+All targets provided by this module are abstract and do nothing. Other modules extend
+these targets. Each target (but `clean`) has its annex `target-stamp` which does
+the real job. Each `*-stamp` is a file created with `touch` command. All internal
+dependencies are implemented through these "stamps", but developer can use only basename
+for target, e. g. `make unpack` instead of `make unpack-stamp`.
+
+* `unpack` - 
+* `patch` - 
+* `configure` - 
+* `build` - 
+* `install` - 
 
 ## ips.mk
 

@@ -35,13 +35,13 @@ mach := $(shell uname -p)
 mach32 :=
 mach64 := amd64
 
-workdir     := $(CURDIR)/work
-sourcedir   := $(workdir)/source
-destdir.32  := $(workdir)/proto/32
-destdir.64  := $(workdir)/proto/64
-builddir.32 := $(workdir)/build/32
-builddir.64 := $(workdir)/build/64
+workdir         := $(CURDIR)/work
+sourcedir       := $(workdir)/source
+destdir.32      := $(workdir)/proto/32
+destdir.64      := $(workdir)/proto/64
 destdir.noarch  := $(workdir)/proto/noarch
+builddir.32     := $(workdir)/build/32
+builddir.64     := $(workdir)/build/64
 builddir.noarch := $(workdir)/build/noarch
 
 CC.32  = gcc -m32
