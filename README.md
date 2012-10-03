@@ -34,7 +34,7 @@ and it should not be included directly, unless you are doing something really sp
 All targets (but `clean`) provided by this module are abstract and do nothing. Other modules extend
 these targets. Each target has its annex `target-stamp` which does
 the real job. Each `*-stamp` is a file created with `touch` command. All internal
-dependencies are implemented through these "stamps", but developer can use only basename
+dependencies are implemented through these "stamps", but developer can use basename
 for target, e. g. `make unpack` instead of `make unpack-stamp`.
 
 Meaning of these targets depends on other included modules:
