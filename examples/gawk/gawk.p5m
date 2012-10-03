@@ -1,0 +1,80 @@
+set name=pkg.fmri value=pkg:/text/$(name)@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source_url value="$(download)"
+
+license $(license-file) license=$(license)
+
+dir path=usr
+dir path=usr/bin
+dir path=usr/libexec
+dir path=usr/libexec/awk
+dir path=usr/share
+dir path=usr/share/awk
+dir path=usr/share/info
+dir path=usr/share/locale
+dir path=usr/share/locale/da
+dir path=usr/share/locale/da/LC_MESSAGES
+dir path=usr/share/locale/de
+dir path=usr/share/locale/de/LC_MESSAGES
+dir path=usr/share/locale/es
+dir path=usr/share/locale/es/LC_MESSAGES
+dir path=usr/share/locale/fi
+dir path=usr/share/locale/fi/LC_MESSAGES
+dir path=usr/share/locale/fr
+dir path=usr/share/locale/fr/LC_MESSAGES
+dir path=usr/share/locale/it
+dir path=usr/share/locale/it/LC_MESSAGES
+dir path=usr/share/locale/ja
+dir path=usr/share/locale/ja/LC_MESSAGES
+dir path=usr/share/locale/nl
+dir path=usr/share/locale/nl/LC_MESSAGES
+dir path=usr/share/locale/pl
+dir path=usr/share/locale/pl/LC_MESSAGES
+dir path=usr/share/locale/sv
+dir path=usr/share/locale/sv/LC_MESSAGES
+dir path=usr/share/man
+dir path=usr/share/man/man1
+file path=usr/bin/dgawk
+file path=usr/bin/gawk-$(version)
+file path=usr/bin/igawk
+file path=usr/bin/pgawk-$(version)
+file path=usr/libexec/awk/grcat
+file path=usr/libexec/awk/pwcat
+file path=usr/share/awk/assert.awk
+file path=usr/share/awk/bits2str.awk
+file path=usr/share/awk/cliff_rand.awk
+file path=usr/share/awk/ctime.awk
+file path=usr/share/awk/ftrans.awk
+file path=usr/share/awk/getopt.awk
+file path=usr/share/awk/gettime.awk
+file path=usr/share/awk/group.awk
+file path=usr/share/awk/join.awk
+file path=usr/share/awk/libintl.awk
+file path=usr/share/awk/noassign.awk
+file path=usr/share/awk/ord.awk
+file path=usr/share/awk/passwd.awk
+file path=usr/share/awk/quicksort.awk
+file path=usr/share/awk/readable.awk
+file path=usr/share/awk/rewind.awk
+file path=usr/share/awk/round.awk
+file path=usr/share/awk/strtonum.awk
+file path=usr/share/awk/walkarray.awk
+file path=usr/share/awk/zerofile.awk
+file path=usr/share/info/gawk.info
+file path=usr/share/info/gawkinet.info
+file path=usr/share/locale/da/LC_MESSAGES/gawk.mo
+file path=usr/share/locale/de/LC_MESSAGES/gawk.mo
+file path=usr/share/locale/es/LC_MESSAGES/gawk.mo
+file path=usr/share/locale/fi/LC_MESSAGES/gawk.mo
+file path=usr/share/locale/fr/LC_MESSAGES/gawk.mo
+file path=usr/share/locale/it/LC_MESSAGES/gawk.mo
+file path=usr/share/locale/ja/LC_MESSAGES/gawk.mo
+file path=usr/share/locale/nl/LC_MESSAGES/gawk.mo
+file path=usr/share/locale/pl/LC_MESSAGES/gawk.mo
+file path=usr/share/locale/sv/LC_MESSAGES/gawk.mo
+file path=usr/share/man/man1/gawk.1
+file path=usr/share/man/man1/igawk.1
+file path=usr/share/man/man1/pgawk.1
+link path=usr/bin/gawk target=gawk-$(version)
+link path=usr/bin/pgawk target=pgawk-$(version)
