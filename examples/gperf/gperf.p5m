@@ -1,0 +1,18 @@
+set name=pkg.fmri value=pkg:/developer/$(name)@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source_url value="$(download)"
+
+license $(license-file) license=$(license)
+
+dir path=usr
+dir path=usr/bin
+dir path=usr/share
+dir path=usr/share/man
+dir path=usr/share/man/man1
+dir path=usr/share/doc
+dir path=usr/share/info
+file path=usr/bin/gperf
+file path=usr/share/man/man1/gperf.1
+file path=usr/share/doc/gperf.html
+file path=usr/share/info/gperf.info
