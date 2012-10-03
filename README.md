@@ -59,16 +59,19 @@ and by default it is:
 ## ips.mk
 
 This module provides functions to work with IPS manifests and publish packages.
-When `ips.mk` modules is included these targets are available from main `Makefile`:
+
+### Targets provided by ips.mk
 
 * `publish` - publish IPS package into IPS repository
 * `pre-publish` - make everything required to publish (including downloading archive,
 patching, compiling, mogrifying manifests etc), but do not publish. Usefull for final
 verifications what is going into IPS repository. All intermediate and final manifests
-are in `work/manifests` directory.
+are in "work/manifests" directory.
 * `build-dep` - install build dependencies
 
+### Variables used by ips.mk
 
-Any variable defined in `Makefile` will be passed to `pkgmogrify`, for example:
+* `ips-repo` - IPS repository to publish, e. g. `make publish ips-repo=http://example.com:1234`
 
-`pkgmogrify -Darchive="mpfr-3.1.1.tar.xz" -Ddownload="http://ftp.gnu.org/gnu/mpfr/mpfr-3.1.1.tar.xz" -Dhome="http://www.mpfr.org/" -Dlicense="LGPLv3" -Dname="mpfr" -Dsummary="GNU library for multiple-precision floating-point computations with correct rounding" -Dversion="3.1.1" ...`
+Any variable defined in Makefile will be passed to `pkgmogrify` and 
+can be used in IPS manifests (*.p5m).
