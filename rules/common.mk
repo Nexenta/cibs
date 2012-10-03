@@ -85,6 +85,12 @@ destdir    = $(destdir.$(bits))
 check-build-dep-stamp unpack-stamp patch-stamp pre-configure-stamp configure-stamp build-stamp install-stamp:
 	touch $@
 
+install-stamp   : build-stamp
+build-stamp     : configure-stamp
+configure-stamp : patch-stamp
+patch-stamp     : unpack-stamp
+unpack-stamp    : check-build-dep-stamp
+
 # Common target to use from command line
 # or in component top-level Makefile:
 unpack    : unpack-stamp
