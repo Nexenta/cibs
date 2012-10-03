@@ -47,9 +47,7 @@ pkg-define += \
 
 
 # Where to find files:
-pkg-protos =  -d "$(destdir.32)"
-pkg-protos += -d "$(destdir.64)"
-pkg-protos += -d "$(destdir.noarch)"
+pkg-protos = $(protodirs:%=-d "%")
 pkg-protos += -d "$(sourcedir)" -d .
 
 transformations := \
@@ -91,15 +89,8 @@ mogrify-stamp: $(mogrified-manifests)
 	touch $@
 
 
-# pkgdepend is unhappy if some proto dirs do not exist:
-protodirs-stamp:
-	[ -d "$(destdir.32)" ] || mkdir -p "$(destdir.32)"
-	[ -d "$(destdir.64)" ] || mkdir -p "$(destdir.64)"
-	[ -d "$(destdir.noarch)" ] || mkdir -p "$(destdir.noarch)"
-	touch $@
-
 depend-manifests := $(manifests:%=$(manifestdir)/depend-%)
-$(manifestdir)/depend-% : $(manifestdir)/mogrified-% protodirs-stamp
+$(manifestdir)/depend-% : $(manifestdir)/mogrified-%
 	pkgdepend generate -m $(pkg-protos) $< > $@ || (rm -f $@; false)
 depend-stamp: $(depend-manifests)	
 	touch $@
@@ -116,7 +107,7 @@ resolve-stamp: $(resolved-manifests)
 # For convenience - make all, before publishing
 pre-publish: resolve-stamp
 
-publish-stamp: pre-publish protodirs-stamp
+publish-stamp: pre-publish
 	@if [ -n "$(ips-repo)" ]; then \
 	set -x; \
 	for m in $(resolved-manifests); do \

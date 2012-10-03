@@ -27,6 +27,8 @@ build-stamp     : build-64-stamp
 configure-stamp : configure-64-stamp
 install-stamp   : install-64-stamp
 
+protodirs += $(destdir.64)
+
 %-64-stamp: bits = 64
 
 __64_mk := included
