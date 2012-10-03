@@ -48,7 +48,7 @@ Meaning of these targets depends on other included modules:
 
 Each target in the list above depends on previous target. Yes, except `clean`.
 
-`clean` has [double-colon rule](http://www.gnu.org/software/make/manual/html_node/Double_002dColon.html)
+`clean` has a [double-colon rule](http://www.gnu.org/software/make/manual/html_node/Double_002dColon.html)
 and by default it is:
 
     clean::
