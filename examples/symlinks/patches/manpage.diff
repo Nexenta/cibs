@@ -1,0 +1,15 @@
+Description: Fix section of the symlinks manpage
+Author: Sven Joachim <svenjoac@gmx.de>
+
+---
+ symlinks.8 |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/symlinks.8
++++ b/symlinks.8
+@@ -1,4 +1,4 @@
+-.TH SYMLINKS 8 "October 2008" "Version 1.4"
++.TH SYMLINKS 1 "October 2008" "Version 1.4"
+ 
+ .SH NAME
+ symlinks \- symbolic link maintenance utility

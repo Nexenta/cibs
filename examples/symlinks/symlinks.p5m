@@ -6,5 +6,5 @@ set name=info.source-url value="$(git-url)"
 license $(license-file) license=$(license)
 
 file path=usr/bin/symlinks
-file symlinks.8 path=usr/share/man/man8/symlinks.8
+file symlinks.8 path=usr/share/man/man8/symlinks.1
 

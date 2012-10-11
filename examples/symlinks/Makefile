@@ -1,5 +1,6 @@
 include /usr/share/cibs/rules/ips.mk
 include /usr/share/cibs/rules/git.mk
+include /usr/share/cibs/rules/patch.mk
 include /usr/share/cibs/rules/32.mk
 
 
@@ -19,7 +20,7 @@ git-checkout := upstream/$(version)
 configure-%-stamp:
 	touch $@
 
-build-%-stamp: download-stamp
+build-%-stamp: download-stamp patch-stamp
 	[ -d "$(builddir)" ] || mkdir -p "$(builddir)"
 	$(CC) $(CFLAGS) $(sourcedir)/symlinks.c -o $(builddir)/symlinks
 	touch $@
