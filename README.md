@@ -75,3 +75,17 @@ are in "work/manifests" directory.
 
 Any variable defined in Makefile will be passed to `pkgmogrify` and 
 can be used in IPS manifests (*.p5m).
+
+## git.mk
+
+Use this modules to get sources from Git repositories. With this module included
+targets `download` and `unpack` mean the same thing - clone git reporitory into
+source directory ("work/source"), then checkout given tag, commit or branch.
+
+Makefile should define two variables:
+
+* `git-url` - URL of Git repository, used as `git clone $(git-url) $(sourcedir)`
+* `git-checkout` - Git tag, branch or commit; used as `git checkout $(git-checkout)`
+
+For example see "examples/symlinks".
+
