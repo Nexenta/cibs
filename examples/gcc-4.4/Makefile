@@ -4,11 +4,6 @@ include /usr/share/cibs/rules/autotools.mk
 include /usr/share/cibs/rules/patch.mk
 include /usr/share/cibs/rules/32.mk
 
-summary := GNU Compiler Collection
-license := GPL
-license-file := COPYING
-
-
 # Clean all flags cause we are building very specific stuff
 CFLAGS := -O2
 CXXFLAGS := $(CFLAGS)
