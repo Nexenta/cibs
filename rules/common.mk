@@ -49,8 +49,7 @@ CC.64  = gcc -m64
 CXX.32 = g++ -m32
 CXX.64 = g++ -m64
 
-export PATH := \
-	/usr/gcc/4.4/bin:/usr/gcc/4.3/bin:/usr/gnu/bin:/usr/sbin:/usr/bin:/sbin
+export PATH := /usr/bin:/usr/gnu/bin:/usr/sbin:/sbin
 export CFLAGS = -O2
 
 prefix = /usr
