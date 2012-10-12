@@ -26,6 +26,8 @@ ifeq (,$(__archive_mk))
 
 .SECONDEXPANSION:
 
+protodirs += $(sourcedir)
+
 archive-validator := /usr/share/cibs/scripts/validate-archive
 validate-%-stamp: download-%-stamp
 	if [ -n "$(checksum_$*)" ]; then \

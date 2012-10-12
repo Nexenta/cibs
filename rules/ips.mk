@@ -48,7 +48,7 @@ pkg-define += \
 
 # Where to find files:
 pkg-protos = $(protodirs:%=-d "%")
-pkg-protos += -d "$(sourcedir)" -d .
+pkg-protos += -d .
 
 transformations := \
 $(transdir)/defaults \
