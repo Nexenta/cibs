@@ -19,7 +19,7 @@ fi
 case "$archive" in
     *.tar.*|*.t?z|*.tbz2)
         [ -d "$sourcedir" ] || mkdir -p "$sourcedir"
-        tar xf "$archive" -C "$sourcedir" --strip=1
+        gtar xf "$archive" -C "$sourcedir" --strip=1
     ;;
     *)
         fatal "Unsupported archive: $archive"
