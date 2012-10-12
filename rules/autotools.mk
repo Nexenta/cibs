@@ -43,8 +43,9 @@ configure-options = \
 	--bindir="$(bindir)" \
 	--includedir="$(includedir)" \
 	--infodir=/usr/share/info \
+	--mandir=\$${prefix}/share/man \
 	--localstatedir=/var \
-	--disable-static \
+
 
 configure-%-stamp: pre-configure-stamp
 	[ -d "$(builddir)" ] || mkdir -p "$(builddir)"
