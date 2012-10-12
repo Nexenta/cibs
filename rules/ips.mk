@@ -35,7 +35,7 @@ ips-version = $(version)
 endif
 
 # Substitutions in IPS manifest:
-makefile-vars := $(shell sed -n 's/^ *\([-_0-9a-zA-Z]*\) *[:?]*=.*$$/\1/p' Makefile | sort -u)
+makefile-vars := $(shell sed -n 's/^ *\([a-zA-Z][-_0-9a-zA-Z]*\) *[:?]*=.*$$/\1/p' Makefile | sort -u)
 pkg-define = $(foreach _,$(makefile-vars),-D$(_)="$($(_))")
 pkg-define += -Dips-version="$(ips-version)"	
 
