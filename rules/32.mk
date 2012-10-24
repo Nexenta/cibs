@@ -31,6 +31,11 @@ protodirs += $(destdir.32)
 
 %-32-stamp: bits = 32
 
+# build32 = \#, not it is emtpy and lines like
+# $(build32) file path=...
+# in manifests are included
+build32 :=
+
 __32_mk := included
 
 endif

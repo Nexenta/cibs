@@ -44,6 +44,8 @@ pkg-define += \
 -DMACH="$(mach)" \
 -DMACH32="$(mach32)" \
 -DMACH64="$(mach64)" \
+-Dbuild32="$(build32)" \
+-Dbuild64="$(build64)" \
 
 
 # Where to find files:

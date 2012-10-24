@@ -24,8 +24,13 @@
 # include guard:
 ifeq (,$(__common_mk))
 
+skip := \#
+
+build32 := $(skip)
+build64 := $(skip)
+
 # Default:
-bits := 32
+bits := 64
 
 # Prepended to commands which require root privileges
 # May be overriden in /etc/cibs/cibs.conf to, for example, pfexec

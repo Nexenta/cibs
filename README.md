@@ -74,7 +74,15 @@ are in "work/manifests" directory.
 * `ips-repo` - IPS repository to publish, e. g. `make publish ips-repo=http://example.com:1234`
 
 Any variable defined in Makefile will be passed to `pkgmogrify` and 
-can be used in IPS manifests (*.p5m).
+can be used in IPS manifests (*.p5m). These variables passed additionally:
+`build32` = `#` or empty, and `build64` = `#` or empty. These variables can
+be used to cut off some line in package manifest (by commenting out).
+By default these vars are `#` (pound).
+If module `32.mk` is included, `build32` becomes '' (empty), so lines like:
+
+    $(build32) file path=usr/lib/libfoo.so.1
+
+become uncommented. Same for modules `64.mk`.
 
 ## git.mk
 
