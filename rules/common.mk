@@ -42,15 +42,18 @@ mach64 := amd64
 
 variants :=
 
+workdir-base := work
+workdir   := $(CURDIR)/$(workdir-base)
+sourcedir := $(workdir)/source
+
 define add-variant
+protodir-base.$1 = $(workdir-base)/proto/$1
+builddir-base.$1 = $(workdir-base)/build/$1
 protodir.$1 = $(workdir)/proto/$1
 builddir.$1 = $(workdir)/build/$1
 variants += $1
-protodirs += $(protodir.$1)
 endef
 
-workdir   := $(CURDIR)/work
-sourcedir := $(workdir)/source
 
 CC.32  = gcc -m32
 CC.64  = gcc -m64
