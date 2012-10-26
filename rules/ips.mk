@@ -45,6 +45,12 @@ pkg-define += \
 -Dbuild32="$(build32)" \
 -Dbuild64="$(build64)" \
 
+# Add $(protodir.<variant>) to use in manifest:
+# file $(protodir.64) path=usr/include/header.64.h
+pkg-define += $(foreach _,$(variants),-Dprotodir.$(_)="$(protodir.$(_))")
+
+# Same for $(builddir.xxx):
+pkg-define += $(foreach _,$(variants),-Dbuilddir.$(_)="$(builddir.$(_))")
 
 # Where to find files:
 pkg-protos = $(protodirs:%=-d "%")
