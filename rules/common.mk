@@ -40,9 +40,12 @@ mach := $(shell uname -p)
 mach32 :=
 mach64 := amd64
 
+variants :=
+
 define add-variant
 destdir.$1 = $(workdir)/proto/$1
 builddir.$1 = $(workdir)/build/$1
+variants += $1
 endef
 
 workdir   := $(CURDIR)/work

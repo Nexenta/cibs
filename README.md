@@ -102,3 +102,9 @@ Makefile should define two variables:
 
 For example see "examples/symlinks".
 
+## copy.mk
+
+If this module is included, entire source tree will be copied
+into all requested building directories. This is useful for
+packages that do not support building out of source tree,
+such as zlib or openssl.
