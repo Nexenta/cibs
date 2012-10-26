@@ -30,7 +30,7 @@ pre-configure-stamp: copy-stamp
 .SECONDEXPANSION:
 copy-stamp:  $$(addprefix copy-,$$(addsuffix -stamp,$$(variants) $$(variants)))
 copy-%-stamp: patch-stamp unpack-stamp	
-	echo $*
+	@echo "Copying source for \`$*'"
 	[ -n "$(builddir.$*)" ]
 	[ -d "$(builddir.$*)" ] || mkdir -p "$(builddir.$*)"
 	cp -r -p $(sourcedir)/* $(builddir.$*)/
