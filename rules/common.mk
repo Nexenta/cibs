@@ -93,7 +93,8 @@ check-build-dep-stamp unpack-stamp patch-stamp pre-configure-stamp configure-sta
 
 install-stamp   : build-stamp
 build-stamp     : configure-stamp
-configure-stamp : patch-stamp
+configure-stamp : pre-configure-stamp
+pre-configure-stamp : patch-stamp unpack-stamp
 patch-stamp     : unpack-stamp
 unpack-stamp    : check-build-dep-stamp
 
