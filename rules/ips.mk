@@ -29,10 +29,8 @@ include /usr/share/cibs/rules/common.mk
 manifestdir := $(workdir)/manifest
 transdir := /usr/share/cibs/trans
 
-# TODO: rewrite
-ifeq (,$(ips-version))
+# Default, can be overriden in Makefile.  See next lines.
 ips-version = $(version)
-endif
 
 # Substitutions in IPS manifest:
 makefile-vars := $(shell sed -n 's/^ *\([a-zA-Z][-_0-9a-zA-Z]*\) *[:?]*=.*$$/\1/p' Makefile | sort -u)
