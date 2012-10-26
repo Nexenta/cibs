@@ -45,10 +45,8 @@ destdir.$1 = $(workdir)/proto/$1
 builddir.$1 = $(workdir)/build/$1
 endef
 
-
-workdir         := $(CURDIR)/work
-sourcedir       := $(workdir)/source
-$(eval $(call add-variant,64))
+workdir   := $(CURDIR)/work
+sourcedir := $(workdir)/source
 
 CC.32  = gcc -m32
 CC.64  = gcc -m64
