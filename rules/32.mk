@@ -31,8 +31,6 @@ build-stamp     : build-32-stamp
 configure-stamp : configure-32-stamp
 install-stamp   : install-32-stamp
 
-protodirs += $(destdir.32)
-
 %-32-stamp: bits = 32
 
 # build32 = \#, not it is emtpy and lines like

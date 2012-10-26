@@ -26,6 +26,6 @@ build-%-stamp: download-stamp patch-stamp
 	touch $@
 
 install-%-stamp: build-%-stamp
-	mkdir -p $(destdir)/$(bindir)
-	cp $(builddir)/symlinks $(destdir)/$(bindir)
+	mkdir -p $(protodir)/$(bindir)
+	cp $(builddir)/symlinks $(protodir)/$(bindir)
 	touch $@

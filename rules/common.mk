@@ -43,9 +43,10 @@ mach64 := amd64
 variants :=
 
 define add-variant
-destdir.$1 = $(workdir)/proto/$1
+protodir.$1 = $(workdir)/proto/$1
 builddir.$1 = $(workdir)/build/$1
 variants += $1
+protodirs += $(protodir.$1)
 endef
 
 workdir   := $(CURDIR)/work
@@ -81,7 +82,7 @@ includedir = $(includedir.$(bits))
 CC         = $(CC.$(bits))
 CXX        = $(CXX.$(bits))
 builddir   = $(builddir.$(bits))
-destdir    = $(destdir.$(bits))
+protodir   = $(protodir.$(bits))
 
 
 

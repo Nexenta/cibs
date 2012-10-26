@@ -59,7 +59,7 @@ build-%-stamp: configure-%-stamp
 	touch $@
 
 install-%-stamp: build-%-stamp
-	cd "$(builddir)" && $(MAKE) install DESTDIR="$(destdir)"
+	cd "$(builddir)" && $(MAKE) install DESTDIR="$(protodir)"
 	touch $@
 
 

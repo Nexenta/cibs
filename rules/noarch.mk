@@ -31,8 +31,6 @@ build-stamp     : build-noarch-stamp
 configure-stamp : configure-noarch-stamp
 install-stamp   : install-noarch-stamp
 
-protodirs += $(destdir.noarch)
-
 %-noarch-stamp: bits = noarch
 
 __noarch_mk := included
