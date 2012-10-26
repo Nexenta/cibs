@@ -23,6 +23,10 @@
 
 ifeq (,$(__64_mk))
 
+include /usr/share/cibs/rules/common.mk
+
+$(eval $(call add-variant,64))
+
 build-stamp     : build-64-stamp
 configure-stamp : configure-64-stamp
 install-stamp   : install-64-stamp
@@ -35,7 +39,7 @@ protodirs += $(destdir.64)
 # $(build64) file path=...
 # in manifests are included
 build64 :=
-
+:
 __64_mk := included
 
 endif

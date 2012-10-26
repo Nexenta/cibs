@@ -40,14 +40,15 @@ mach := $(shell uname -p)
 mach32 :=
 mach64 := amd64
 
+define add-variant
+destdir.$1 = $(workdir)/proto/$1
+builddir.$1 = $(workdir)/build/$1
+endef
+
+
 workdir         := $(CURDIR)/work
 sourcedir       := $(workdir)/source
-destdir.32      := $(workdir)/proto/32
-destdir.64      := $(workdir)/proto/64
-destdir.noarch  := $(workdir)/proto/noarch
-builddir.32     := $(workdir)/build/32
-builddir.64     := $(workdir)/build/64
-builddir.noarch := $(workdir)/build/noarch
+$(eval $(call add-variant,64))
 
 CC.32  = gcc -m32
 CC.64  = gcc -m64

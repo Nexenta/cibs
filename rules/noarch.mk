@@ -23,6 +23,10 @@
 
 ifeq (,$(__noarch_mk))
 
+include /usr/share/cibs/rules/common.mk
+
+$(eval $(call add-variant,noarch))
+
 build-stamp     : build-noarch-stamp
 configure-stamp : configure-noarch-stamp
 install-stamp   : install-noarch-stamp
