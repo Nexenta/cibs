@@ -89,6 +89,13 @@ If module `32.mk` is included, `build32` becomes '' (empty), so lines like:
 
 become uncommented. Same for modules `64.mk`.
 
+Other automatic variables are `protodir.<variant>` and `builddir.<variant>`.
+These variables hold paths to corresponding directories used to
+install or build package. `<variant>` can be, for example, 32 or 64.
+This allow exact specifying which file is requested, e. g.:
+
+    file $(builddir.32)/libfoo.so.1 path=usr/lib/libfoo.so.1
+
 ## git.mk
 
 Use this modules to get sources from Git repositories. With this module included
