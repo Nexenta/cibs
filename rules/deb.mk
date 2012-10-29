@@ -28,7 +28,8 @@ include /usr/share/cibs/rules/ips-manifest.mk
 
 debmaker := /usr/share/cibs/scripts/debmaker.pl
 
-DEBVERSION ?= ips
+# Can be overriden in Makefile. Both.
+deb-version = $(ips-version)
 
 pkg-define += -D COMPONENT_VERSION="$(ips-version)"
 
@@ -46,7 +47,7 @@ deb-stamp: pre-deb
 	[ -n "$(debsdir)" ]
 	[ -d "$(debsdir)" ] || mkdir -p "$(debsdir)"
 	$(root-cmd) $(debmaker) \
-		-V "$(DEBVERSION)" \
+		-V "$(deb-version)" \
 		-S "$(name)" \
 		-O "$(debsdir)" \
 		$(pkg-define) \
