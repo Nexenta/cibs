@@ -34,26 +34,26 @@ ips-version = $(version)
 
 # Substitutions in IPS manifest:
 makefile-vars := $(shell sed -n 's/^ *\([a-zA-Z][-_0-9a-zA-Z]*\) *[:?]*=.*$$/\1/p' Makefile | sort -u)
-pkg-define = $(foreach _,$(makefile-vars),-D$(_)="$($(_))")
-pkg-define += -Dips-version="$(ips-version)"	
+pkg-define = $(foreach _,$(makefile-vars),-D $(_)="$($(_))")
+pkg-define += -D ips-version="$(ips-version)"	
 
  
 pkg-define += \
--DMACH="$(mach)" \
--DMACH32="$(mach32)" \
--DMACH64="$(mach64)" \
--Dmach="$(mach)" \
--Dmach32="$(mach32)" \
--Dmach64="$(mach64)" \
--Dbuild32="$(build32)" \
--Dbuild64="$(build64)" \
+-D MACH="$(mach)" \
+-D MACH32="$(mach32)" \
+-D MACH64="$(mach64)" \
+-D mach="$(mach)" \
+-D mach32="$(mach32)" \
+-D mach64="$(mach64)" \
+-D build32="$(build32)" \
+-D build64="$(build64)" \
 
 # Add $(protodir.<variant>) to use in manifest:
 # file $(protodir.64) path=usr/include/header.64.h
-pkg-define += $(foreach _,$(variants),-Dprotodir.$(_)="$(protodir-base.$(_))")
+pkg-define += $(foreach _,$(variants),-D protodir.$(_)="$(protodir-base.$(_))")
 
 # Same for $(builddir.xxx):
-pkg-define += $(foreach _,$(variants),-Dbuilddir.$(_)="$(builddir-base.$(_))")
+pkg-define += $(foreach _,$(variants),-D builddir.$(_)="$(builddir-base.$(_))")
 
 # Where to find files:
 pkg-protos = $(foreach _,$(variants),-d "$(protodir.$(_))")
