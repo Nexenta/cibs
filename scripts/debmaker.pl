@@ -714,6 +714,8 @@ foreach my $manifest_file (@ARGV) {
             if (!my_hardlink $$link{'target'}, "$pkgdir/$$link{'path'}") {
                 warning "Adding code to create hardlink at post-install phase";
                 push @hl_script, $link;
+            } else {
+                push @replaces, get_debpkg_name $$link{original_name} if exists $$link{original_name};
             }
         }
         if (@hl_script) {
@@ -750,6 +752,7 @@ foreach my $manifest_file (@ARGV) {
                 $prerm .= 'if [ "$1" = remove ]; then $CHROOT update-alternatives --remove ' . "$n $p || true; fi\n";
             } else {
                 my_symlink $$link{'target'}, "$pkgdir/$$link{'path'}";
+                push @replaces, get_debpkg_name $$link{original_name} if exists $$link{original_name};
             }
         }
     }
