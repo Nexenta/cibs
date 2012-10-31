@@ -37,7 +37,6 @@ install-stamp   : install-64-stamp
 # $(build64) file path=...
 # in manifests are included
 build64 :=
-:
 __64_mk := included
 
 endif
