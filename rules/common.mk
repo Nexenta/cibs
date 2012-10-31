@@ -62,6 +62,7 @@ CXX.64 = g++ -m64
 
 export PATH := /usr/bin:/usr/gnu/bin:/usr/sbin:/sbin
 export CFLAGS = -O2
+export CXXFLAGS = -O2
 
 prefix = /usr
 libdir.32 = $(prefix)/lib/$(mach32)
