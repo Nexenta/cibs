@@ -57,6 +57,7 @@ pkg-define += $(foreach _,$(variants),-D builddir.$(_)="$(builddir-base.$(_))")
 
 # Where to find files:
 pkg-protos = $(foreach _,$(variants),-d "$(protodir.$(_))")
+pkg-protos += -d "$(sourcedir)"
 pkg-protos += -d .
 
 transformations := \
