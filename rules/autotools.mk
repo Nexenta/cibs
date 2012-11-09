@@ -34,10 +34,10 @@ configure-env = \
 	CFLAGS="$(CFLAGS)" \
 	CXXFLAGS="$(CXXFLAGS)" \
 	CPPFLAGS="$(CPPFLAGS)" \
+	$(configure-env.$(variant)) \
 
 
 configure-options = \
-	$(configure-options.$(bits)) \
 	--prefix="$(prefix)" \
 	--libdir="$(libdir)" \
 	--bindir="$(bindir)" \
@@ -45,20 +45,21 @@ configure-options = \
 	--infodir=/usr/share/info \
 	--mandir=\$${prefix}/share/man \
 	--localstatedir=/var \
+	$(configure-options.$(variant)) \
 
 
-configure-%-stamp: pre-configure-stamp
+configure-%-stamp:
 	[ -d "$(builddir)" ] || mkdir -p "$(builddir)"
 	cd "$(builddir)" && \
 		env $(configure-env) \
 		$(configure) $(configure-options)
 	touch $@
 
-build-%-stamp: configure-%-stamp
+build-%-stamp:
 	cd "$(builddir)" && $(MAKE) $(make-jobs:%=-j%)
 	touch $@
 
-install-%-stamp: build-%-stamp
+install-%-stamp:
 	cd "$(builddir)" && $(MAKE) install DESTDIR="$(protodir)"
 	touch $@
 

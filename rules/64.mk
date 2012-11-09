@@ -27,10 +27,6 @@ include /usr/share/cibs/rules/common.mk
 
 $(eval $(call add-variant,64))
 
-build-stamp     : build-64-stamp
-configure-stamp : configure-64-stamp
-install-stamp   : install-64-stamp
-
 %-64-stamp: bits = 64
 
 # build64 = \#, not it is emtpy and lines like

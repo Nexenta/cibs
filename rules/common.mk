@@ -51,7 +51,19 @@ protodir-base.$1 = $(workdir-base)/proto/$1
 builddir-base.$1 = $(workdir-base)/build/$1
 protodir.$1 = $(workdir)/proto/$1
 builddir.$1 = $(workdir)/build/$1
+
+configure-stamp    : configure-$1-stamp
+build-stamp        : build-$1-stamp
+install-stamp      : install-$1-stamp
+
+configure-$1-stamp : pre-configure-stamp
+build-$1-stamp     : configure-$1-stamp
+install-$1-stamp   : build-$1-stamp
+
 variants += $1
+
+%-$1-stamp: variant = $1
+
 endef
 
 
@@ -69,11 +81,9 @@ libdir.32 = $(prefix)/lib/$(mach32)
 libdir.64 = $(prefix)/lib/$(mach64)
 bindir.32 = $(prefix)/bin
 bindir.64 = $(prefix)/bin
-includedir.32 = /usr/include
-includedir.64 = /usr/include
+includedir = /usr/include
 libdir.noarch = $(prefix)/lib
 bindir.noarch = $(prefix)/bin
-includedir.noarch = /usr/include
 
 PKG_CONFIG_PATH.32 = /usr/gnu/lib/$(mach32)/pkg-config:/usr/lib/$(mach32)/pkg-config
 PKG_CONFIG_PATH.64 = /usr/gnu/lib/$(mach64)/pkg-config:/usr/lib/$(mach64)/pkg-config
@@ -82,11 +92,11 @@ export PKG_CONFIG_PATH = PKG_CONFIG_PATH.$(bits)
 # $(bits) are target-specific and defined in 32.mk or 64.mk
 bindir     = $(bindir.$(bits))
 libdir     = $(libdir.$(bits))
-includedir = $(includedir.$(bits))
 CC         = $(CC.$(bits))
 CXX        = $(CXX.$(bits))
-builddir   = $(builddir.$(bits))
-protodir   = $(protodir.$(bits))
+
+builddir   = $(builddir.$(variant))
+protodir   = $(protodir.$(variant))
 
 
 

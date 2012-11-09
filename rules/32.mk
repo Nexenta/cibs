@@ -27,10 +27,6 @@ include /usr/share/cibs/rules/common.mk
 
 $(eval $(call add-variant,32))
 
-build-stamp     : build-32-stamp
-configure-stamp : configure-32-stamp
-install-stamp   : install-32-stamp
-
 %-32-stamp: bits = 32
 
 # build32 = \#, not it is emtpy and lines like

@@ -31,10 +31,11 @@ and it should not be included directly, unless you are doing something really sp
 
 ### Targets provided by common.mk
 
-All targets (but `clean`) provided by this module are abstract and do nothing. Other modules extend
-these targets. Each target has its annex `target-stamp` which does
-the real job. Each `*-stamp` is a file created with `touch` command. All internal
-dependencies are implemented through these "stamps", but developer can use basename
+All targets (but `clean`) provided by this module are abstract and
+do nothing.  Other modules extend these targets. Each target has
+its annex `target-stamp` which does the real job. Each `*-stamp` is
+a file created with `touch` command. All internal dependencies are
+implemented through these "stamps", but developer can use basename
 for target, e. g. `make unpack` instead of `make unpack-stamp`.
 
 Meaning of these targets depends on other included modules:
@@ -44,7 +45,6 @@ Meaning of these targets depends on other included modules:
 * `configure` - configure sources, e. g. execute GNU configure or CMake,
 * `build` - build sources, e. g. compile with C compiler,
 * `install` - install files into proto directory.
-* `clean` - remove all stamps and working directory (`./work` by default)
 
 Each target in the list above depends on previous target. Yes, except `clean`.
 
@@ -54,6 +54,35 @@ and by default it is:
     clean::
         rm -f *-stamp
         rm -rf $(workdir)
+
+### Building many variants
+
+`common.mk` defines a macro `add-variant` to extend above targets and  to define
+related variables such as `protodir.<variant>`. Calling `$(eval $(call add-variant,FOO))`
+will add dependencies to configure-stamp, build-stamp,install-stamp and define
+extra variables:
+
+    variants += FOO
+    protodir.FOO = $(workdir)/proto/FOO
+    builddir.FOO = $(workdir)/build/FOO
+
+    configure-stamp    : configure-FOO-stamp
+    build-stamp        : build-FOO-stamp
+    install-stamp      : install-FOO-stamp
+    %-FOO-stamp: variant = FOO
+
+
+The `add-variant` macro is used by `32.mk` and `64.mk` modules for
+building 32-bit or 64-bit packages.  You may want to use it for any
+other purpose, e. g. to compile Curl with OpenSSL or with GNU TLS.
+Standard modules, such as `autotools.mk`, take care of every variant defined.
+You can tune building by defining variables like `configure-options.FOO`, e. g.:
+
+    $(eval $(call add-variant,ssl))
+    $(eval $(call add-variant,gnu))
+
+    configure-options.gnu = --without-ssl --with-gnutls
+    configure-options.ssl = --with-ssl --without-gnutls
 
 
 ## ips.mk
