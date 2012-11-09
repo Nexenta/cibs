@@ -29,7 +29,7 @@ $(eval $(call add-variant,64))
 
 %-64-stamp: bits = 64
 
-# build64 = \#, not it is emtpy and lines like
+# build64 = \#, now it is emtpy and lines like
 # $(build64) file path=...
 # in manifests are included
 build64 :=
