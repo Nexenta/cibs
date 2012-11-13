@@ -69,8 +69,6 @@ $(transdir)/arch \
 
 
 
-# Supplied canonical manifests:
-manifests := $(wildcard *.p5m)
 
 # Manifest generators:
 manifests-x := $(wildcard *.p5m.x)
@@ -88,6 +86,8 @@ manifests-generated += $(manifests-m4:%.m4=%)
 
 manifests += $(manifests-generated)
 generated-files += $(manifests-generated)
+# Supplied canonical manifests:
+manifests := $(filter-out $(generated-manifests),$(wildcard *.p5m))
 
 #TODO: Expand "glob" action in manifests:
 globalizator := /usr/share/cibs/scripts/globalizator
