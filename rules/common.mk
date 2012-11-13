@@ -125,6 +125,7 @@ install   : install-stamp
 clean :: 
 	rm -f *-stamp
 	rm -rf $(workdir)
+	[ -z "$(generated-files)" ] || rm -f $(generated-files)
 
 __common_mk := included
 

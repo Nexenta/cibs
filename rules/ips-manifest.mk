@@ -74,9 +74,20 @@ manifests := $(wildcard *.p5m)
 
 # Manifest generators:
 manifests-x := $(wildcard *.p5m.x)
-manifests += $(manifests-x:%.x=%)
+manifests-generated += $(manifests-x:%.x=%)
 %.p5m: %.p5m.x
 	./$< > $@
+
+manifests-m4 := $(wildcard *.p5m.m4)
+ifneq (,$(manifests-m4))
+build-depends += gnu-m4
+endif
+manifests-generated += $(manifests-m4:%.m4=%)
+%.p5m: %.p5m.m4
+	gm4 $< > $@
+
+manifests += $(manifests-generated)
+generated-files += $(manifests-generated)
 
 #TODO: Expand "glob" action in manifests:
 globalizator := /usr/share/cibs/scripts/globalizator
