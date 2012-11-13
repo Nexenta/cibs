@@ -85,8 +85,8 @@ includedir = /usr/include
 libdir.noarch = $(prefix)/lib
 bindir.noarch = $(prefix)/bin
 
-PKG_CONFIG_PATH.32 = /usr/gnu/lib/$(mach32)/pkg-config:/usr/lib/$(mach32)/pkg-config
-PKG_CONFIG_PATH.64 = /usr/gnu/lib/$(mach64)/pkg-config:/usr/lib/$(mach64)/pkg-config
+PKG_CONFIG_PATH.32 = /usr/gnu/lib/$(mach32)/pkgconfig:/usr/lib/$(mach32)/pkgconfig
+PKG_CONFIG_PATH.64 = /usr/gnu/lib/$(mach64)/pkgconfig:/usr/lib/$(mach64)/pkgconfig
 export PKG_CONFIG_PATH = PKG_CONFIG_PATH.$(bits)
 
 # $(bits) are target-specific and defined in 32.mk or 64.mk
