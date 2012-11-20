@@ -34,7 +34,7 @@ ips-version = $(version)
 
 # Substitutions in IPS manifest:
 makefile-vars := $(shell sed -n 's/^ *\([a-zA-Z][-_0-9a-zA-Z]*\) *[:?]*=.*$$/\1/p' Makefile | sort -u)
-pkg-define = $(foreach _,$(makefile-vars),-D $(_)="$($(_))")
+pkg-define += $(foreach _,$(makefile-vars),-D $(_)="$($(_))")
 pkg-define += -D ips-version="$(ips-version)"	
 
  
@@ -56,7 +56,8 @@ pkg-define += $(foreach _,$(variants),-D protodir.$(_)="$(protodir-base.$(_))")
 pkg-define += $(foreach _,$(variants),-D builddir.$(_)="$(builddir-base.$(_))")
 
 # Where to find files:
-pkg-protos = $(foreach _,$(variants),-d "$(protodir.$(_))")
+pkg-protos = $(protodirs:%=-d "%")
+pkg-protos += $(foreach _,$(variants),-d "$(protodir.$(_))")
 pkg-protos += -d .
 
 transformations := \
