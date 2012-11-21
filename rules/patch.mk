@@ -24,17 +24,18 @@
 # include guard
 ifeq (,$(__patch_mk))
 
+build-depends += gnu-patch
+
 patchdir = $(CURDIR)/patches
 patches = $(shell [ -d "$(patchdir)" ] && cd "$(patchdir)" && ls -1 | sort)
 
 # Try different path levels:
-applied-%-stamp: $(patchdir)/% unpack-stamp check-build-dep-stamp
+applied-%-stamp: $(patchdir)/% unpack-stamp
 	cd "$(sourcedir)" && \
-		patch -p1 -t < $< || \
-		patch -p0 -t < $< || \
-		patch -p2 -t < $<
+		gpatch -p1 -t < $< || \
+		gpatch -p0 -t < $< || \
+		gpatch -p2 -t < $<
 	touch $@
-
 
 patch-stamp: $(patches:%=applied-%-stamp)
 
