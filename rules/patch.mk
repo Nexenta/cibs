@@ -27,7 +27,7 @@ ifeq (,$(__patch_mk))
 build-depends += gnu-patch
 
 patchdir = $(CURDIR)/patches
-patches = $(shell [ -d "$(patchdir)" ] && cd "$(patchdir)" && ls -1 | sort)
+patches = $(shell [ -d "$(patchdir)" ] && cd "$(patchdir)" && grep -v '^\#' series || ls -1 | sort)
 
 # Try different path levels:
 applied-%-stamp: $(patchdir)/% unpack-stamp
