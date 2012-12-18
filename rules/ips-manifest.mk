@@ -94,7 +94,7 @@ generated-files += $(manifests-generated)
 endif
 
 # Supplied canonical manifests:
-manifests := $(filter-out $(generated-manifests),$(wildcard *.p5m))
+manifests := $(filter-out $(manifests-generated),$(wildcard *.p5m))
 
 manifests += $(manifests-generated)
 
