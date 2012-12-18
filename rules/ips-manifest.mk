@@ -63,7 +63,6 @@ pkg-protos += -d .
 transformations := \
 $(transdir)/defaults \
 $(transdir)/actuators \
-$(transdir)/devel \
 $(transdir)/docs \
 $(transdir)/locale \
 $(transdir)/arch \
