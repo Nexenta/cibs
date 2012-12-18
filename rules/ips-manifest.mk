@@ -96,6 +96,10 @@ endif
 # Supplied canonical manifests:
 manifests := $(filter-out $(generated-manifests),$(wildcard *.p5m))
 
+manifests += $(manifests-generated)
+
+$(manifests-generated): install-stamp
+
 #TODO: Expand "glob" action in manifests:
 globalizator := $(cibs-root)/scripts/globalizator
 glob-manifests := $(manifests:%=$(manifestdir)/glob-%)
