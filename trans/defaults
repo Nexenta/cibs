@@ -104,14 +104,3 @@ set name=variant.arch value=$(MACH)
 set name=variant.elf32 value=true
 set name=variant.elf64 value=true
 
-#
-# Defaults for legacy metadata for SVR4 package information
-#
-<transform legacy -> default vendor "Oracle Corporation">
-<transform legacy -> default hotline \
-	"Please contact your local service provider">
-<transform legacy -> default arch $(MACH)>
-<transform legacy -> default category "system">
-# This is set to the final version number delivered as SVR4 format
-<transform legacy -> default version "11.11.0,REV=2010.05.25.01.00">
-
