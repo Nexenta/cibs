@@ -22,6 +22,40 @@ To create and publish an IPS package you need:
  
 Look into directory `examples` for examples.
 
+
+# Best practices
+
+## Split development file and runtime
+
+In contrast to some crazy distributions (like Solaris or Arch Linux)
+we *do* split runtime and development files (as Debian does).
+
+Any shared library should be packaged into separate package reflecting
+library's soname, e. g. `library/gmp10` includes libgmp.so.10. Nothing else.
+But `library/gmp` includes headers, man pages, maybe static libraries etc. -
+anything that required to build applications using GMP. Both packages -
+`library/FOO` and `library/FOOxxx` are built from the same source, and
+`library/FOO` must depend on `library/FOOxxx` in such a way:
+
+    depend fmri=pkg:/library/FOOxxx@$(ips-version) type=require
+    depend fmri=pkg:/library/FOOxxx@$(ips-version) type=incorporate
+
+The trick is that IPS will use `library/FOOxxx` to fulfil runtime
+dependencies, and we will be allowed to perform smooth migration
+on newer library (e. g. `library/FOOyyy`) without breaking existing
+packages. Of course, newer `library/FOO` will depend on `library/FOOyyy`,
+but `library/FOOyyy` can be installed along with `library/FOOxxx`.
+Again, `library/FOOyyy` and `library/FOOxxx` must be installable together
+so none of them can ship docs, man pages or images or anything,
+but a shared library itself.
+
+Another example is Node.js or Python. Use `developer/nodejs` and
+`runtime/nodejs` package for development files and runtime.
+`runtime/nodejs` includes only the binary - `/usr/bin/nodejs` -
+and maybe other runtime files, man pages etc.
+
+
+
 # CIBS modules
 
 ## common.mk
