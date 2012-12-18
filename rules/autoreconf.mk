@@ -24,7 +24,7 @@
 # include guard
 ifeq (,$(__autoreconf_mk))
 
-include /usr/share/cibs/rules/common.mk
+include $(cibs-root)/rules/common.mk
 
 build-depends += \
 	pkg:/developer/build/libtool \

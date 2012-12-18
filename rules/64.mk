@@ -23,7 +23,7 @@
 
 ifeq (,$(__64_mk))
 
-include /usr/share/cibs/rules/common.mk
+include $(cibs-root)/rules/common.mk
 
 $(eval $(call add-variant,64))
 

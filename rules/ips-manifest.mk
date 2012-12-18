@@ -24,10 +24,10 @@
 # include guard:
 ifeq (,$(__ips_manifest_mk))
 
-include /usr/share/cibs/rules/common.mk
+include $(cibs-root)/rules/common.mk
 
 manifestdir := $(workdir)/manifest
-transdir := /usr/share/cibs/trans
+transdir := $(cibs-root)/trans
 
 # Default, can be overriden in Makefile. See next lines.
 ips-version = $(version)
@@ -98,7 +98,7 @@ endif
 manifests := $(filter-out $(generated-manifests),$(wildcard *.p5m))
 
 #TODO: Expand "glob" action in manifests:
-globalizator := /usr/share/cibs/scripts/globalizator
+globalizator := $(cibs-root)/scripts/globalizator
 glob-manifests := $(manifests:%=$(manifestdir)/glob-%)
 $(glob-manifests): $(manifestdir)/glob-% : %
 	[ -d "$(manifestdir)" ] || mkdir -p "$(manifestdir)"

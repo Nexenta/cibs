@@ -24,7 +24,7 @@
 # include guard:
 ifeq (,$(__ips_mk))
 
-include /usr/share/cibs/rules/ips-manifest.mk
+include $(cibs-root)/rules/ips-manifest.mk
 
 res_suffix := resolved
 resolved-manifests := $(manifests:%=$(manifestdir)/depend-%.$(res_suffix))

@@ -24,9 +24,9 @@
 # include guard:
 ifeq (,$(__deb_mk))
 
-include /usr/share/cibs/rules/ips-manifest.mk
+include $(cibs-root)/rules/ips-manifest.mk
 
-debmaker := /usr/share/cibs/scripts/debmaker.pl
+debmaker := $(cibs-root)/scripts/debmaker.pl
 
 # Can be overriden in Makefile. Both.
 deb-version = $(ips-version)

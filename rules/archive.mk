@@ -29,7 +29,7 @@ ifeq (,$(__archive_mk))
 protodirs += $(sourcedir)
 build-depends += archiver/gnu-tar
 
-archive-validator := /usr/share/cibs/scripts/validate-archive
+archive-validator := $(cibs-root)/scripts/validate-archive
 validate-%-stamp: download-%-stamp
 	if [ -n "$(checksum_$*)" ]; then \
 		$(archive-validator) $* $(checksum_$*) ; \
@@ -45,7 +45,7 @@ validate-stamp: $$(addprefix validate-,$$(addsuffix -stamp,$$(archives) $$(archi
 validate: validate-stamp
 
 
-archive-downloader := /usr/share/cibs/scripts/download-archive
+archive-downloader := $(cibs-root)/scripts/download-archive
 downloader-mirrors = $(mirrors:%=-m %)
 download-%-stamp:
 	if ! [ -f '$*' ]; then \
@@ -64,7 +64,7 @@ download-stamp: $$(addprefix download-,$$(addsuffix -stamp,$$(archives) $$(archi
 download: download-stamp
 
 
-archive-unpacker := /usr/share/cibs/scripts/unpack-archive
+archive-unpacker := $(cibs-root)/scripts/unpack-archive
 unpack-%-stamp: validate-%-stamp check-build-dep-stamp
 	$(archive-unpacker) $* $(sourcedir_$*) $(sourcedir)
 	touch $@

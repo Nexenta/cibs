@@ -23,7 +23,7 @@
 
 ifeq (,$(__copy_mk))
 
-include /usr/share/cibs/rules/common.mk
+include $(cibs-root)/rules/common.mk
 
 pre-configure-stamp: copy-stamp
 

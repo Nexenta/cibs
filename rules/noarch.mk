@@ -23,7 +23,7 @@
 
 ifeq (,$(__noarch_mk))
 
-include /usr/share/cibs/rules/common.mk
+include $(cibs-root)/rules/common.mk
 
 $(eval $(call add-variant,noarch))
 

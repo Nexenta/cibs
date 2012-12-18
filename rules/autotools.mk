@@ -24,7 +24,7 @@
 # include guard
 ifeq (,$(__autotools_mk))
 
-include /usr/share/cibs/rules/common.mk
+include $(cibs-root)/rules/common.mk
 
 
 configure := $(sourcedir)/configure
