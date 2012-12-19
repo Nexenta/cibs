@@ -1,0 +1,16 @@
+diff -dubr source/tools/node-waf waf/tools/node-waf
+--- source/tools/node-waf	2012-10-26 00:49:32.000000000 +0400
++++ waf/tools/node-waf	2012-11-01 23:20:51.438482412 +0400
+@@ -5,7 +5,11 @@
+ join = os.path.join
+ bindir = os.path.dirname(os.path.realpath(__file__))
+ prefix = join(bindir, "..")
+-wafdir = join(prefix, "lib", "node")
++if os.environ.has_key('PREFIX_NODE'):
++    prefix = os.environ['PREFIX_NODE']
++else:
++    prefix = "/usr"
++wafdir = join(prefix, "share", "nodejs")
+ 
+ w = join(wafdir, 'wafadmin')
+ t = join(w, 'Tools')

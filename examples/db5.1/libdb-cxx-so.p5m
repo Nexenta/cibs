@@ -1,0 +1,10 @@
+set name=pkg.fmri value=pkg:/library/libdb-cxx-$(db-ver)-so@$(ips-version)
+set name=pkg.summary value="$(summary), C++ shared library"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+
+file path=usr/lib/$(mach64)/libdb_cxx-$(db-ver).so
+file path=usr/lib/libdb_cxx-$(db-ver).so

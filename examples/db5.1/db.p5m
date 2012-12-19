@@ -1,0 +1,26 @@
+set name=pkg.fmri value=pkg:/database/db-$(db-ver)@$(ips-version)
+set name=pkg.summary value="$(summary), utilities"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+
+
+# Rename db_foo -> db<version>_foo
+<transform file path=.*/bin/db_.* -> set action.hash %(path)>
+<transform file path=.*/bin/db_.* -> edit path db_ db-$(db-ver)_>
+
+file path=usr/bin/db_dump
+file path=usr/bin/db_archive
+file path=usr/bin/db_replicate
+file path=usr/bin/db_deadlock
+file path=usr/bin/db_verify
+file path=usr/bin/db_upgrade
+file path=usr/bin/db_stat
+file path=usr/bin/db_checkpoint
+file path=usr/bin/db_printlog
+file path=usr/bin/db_hotbackup
+file path=usr/bin/db_recover
+file path=usr/bin/db_log_verify
+file path=usr/bin/db_load

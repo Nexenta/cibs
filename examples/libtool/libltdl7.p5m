@@ -1,0 +1,11 @@
+set name=pkg.fmri value=pkg:/library/libtool/libltdl7@$(ips-version)
+set name=pkg.summary value="A system independent dlopen wrapper for GNU libtool, shared library"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license libltdl/COPYING.LIB license=LGPL
+
+file path=usr/lib/$(MACH64)/libltdl.so.7.3.0
+file path=usr/lib/libltdl.so.7.3.0
+link path=usr/lib/$(MACH64)/libltdl.so.7 target=libltdl.so.7.3.0
+link path=usr/lib/libltdl.so.7 target=libltdl.so.7.3.0

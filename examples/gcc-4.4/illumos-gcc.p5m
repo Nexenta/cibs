@@ -29,7 +29,6 @@ set name=info.upstream-url value=$(home)
 depend fmri=pkg:/developer/gcc/gcc-4.4 type=require
 depend fmri=pkg:/developer/gcc/g++-4.4 type=require
 
-dir path=opt
 dir path=opt/gcc
 dir path=opt/gcc/4.4.4
 dir path=opt/gcc/4.4.4/bin

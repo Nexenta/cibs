@@ -1,0 +1,11 @@
+set name=pkg.fmri value=pkg:/library/gmpxx4@$(ips-version)
+set name=pkg.summary value="$(summary), C++ shared library"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+license $(license-file) license=$(license)
+
+file path=usr/lib/$(MACH64)/libgmpxx.so.4.2.5
+file path=usr/lib/libgmpxx.so.4.2.5
+link path=usr/lib/$(MACH64)/libgmpxx.so.4 target=libgmpxx.so.4.2.5
+link path=usr/lib/libgmpxx.so.4 target=libgmpxx.so.4.2.5
+

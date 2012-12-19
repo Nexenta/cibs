@@ -1,0 +1,13 @@
+set name=pkg.fmri value=pkg:/runtime/$(name)@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+license $(license-file) license="$(license)"
+
+
+dir path=usr/lib/nodejs
+file usr/bin/node path=usr/bin/nodejs
+link path=usr/bin/node target=nodejs
+file usr/share/man/man1/node.1 path=usr/share/man/man1/nodejs.1
+link path=usr/share/man/man1/node.1 target=nodejs.1
+

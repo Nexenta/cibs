@@ -1,0 +1,26 @@
+set name=pkg.fmri value=pkg:/library/libdb-stl-$(db-ver)@$(ips-version)
+set name=pkg.summary value="$(summary), C++ STL library"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+depend fmri=pkg:/library/libdb-stl-$(db-ver)-so@$(ips-version) type=require
+depend fmri=pkg:/library/libdb-stl-$(db-ver)-so@$(ips-version) type=incorporate
+
+file path=usr/include/dbstl_vector.h
+file path=usr/include/dbstl_inner_utility.h
+file path=usr/include/dbstl_utility.h
+file path=usr/include/dbstl_map.h
+file path=usr/include/dbstl_set.h
+file path=usr/include/dbstl_dbt.h
+file path=usr/include/dbstl_resource_manager.h
+file path=usr/include/dbstl_container.h
+file path=usr/include/dbstl_element_ref.h
+file path=usr/include/dbstl_exception.h
+file path=usr/include/dbstl_base_iterator.h
+file path=usr/include/dbstl_common.h
+file path=usr/include/dbstl_dbc.h
+
+link target=libdb_stl--$(db-ver).so path=usr/lib/$(mach64)/libdb_stl.so
+link target=libdb_stl--$(db-ver).so path=usr/lib/libdb_stl.so

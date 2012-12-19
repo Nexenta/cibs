@@ -27,6 +27,8 @@ set name=pkg.summary value="GNU C++ compiler, default version"
 
 depend fmri=pkg:/developer/gcc/g++-$(default-version) type=require
 
-link path=usr/bin/g++ target=g++-$(default-version)
-link path=usr/share/man/man1/g++.1 target=g++-$(default-version).1
+link path=usr/bin/g++ target=g++-$(default-version) \
+    original_name=developer/gcc-3
+link path=usr/share/man/man1/g++.1 target=g++-$(default-version).1 \
+    original_name=developer/gcc-3
 

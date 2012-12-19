@@ -1,0 +1,15 @@
+set name=pkg.fmri value=pkg:/library/ncursesw5@$(ips-version)
+set name=pkg.summary value="$(summary), shared libraries with wide character support"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+file path=usr/lib/$(mach64)/libformw.so.5.9
+file path=usr/lib/$(mach64)/libmenuw.so.5.9
+file path=usr/lib/$(mach64)/libncursesw.so.5.9
+file path=usr/lib/$(mach64)/libpanelw.so.5.9
+link path=usr/lib/$(mach64)/libformw.so.5 target=libformw.so.5.9
+link path=usr/lib/$(mach64)/libmenuw.so.5 target=libmenuw.so.5.9
+link path=usr/lib/$(mach64)/libncursesw.so.5 target=libncursesw.so.5.9
+link path=usr/lib/$(mach64)/libpanelw.so.5 target=libpanelw.so.5.9

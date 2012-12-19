@@ -1,0 +1,23 @@
+set name=pkg.fmri value=pkg:/library/ncurses5@$(ips-version)
+set name=pkg.summary value="$(summary), shared libraries"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+file path=usr/lib/$(MACH64)/libform.so.5.9
+file path=usr/lib/$(MACH64)/libmenu.so.5.9
+file path=usr/lib/$(MACH64)/libncurses.so.5.9
+file path=usr/lib/$(MACH64)/libpanel.so.5.9
+file path=usr/lib/libform.so.5.9
+file path=usr/lib/libmenu.so.5.9
+file path=usr/lib/libncurses.so.5.9
+file path=usr/lib/libpanel.so.5.9
+link path=usr/lib/$(MACH64)/libform.so.5 target=libform.so.5.9
+link path=usr/lib/$(MACH64)/libmenu.so.5 target=libmenu.so.5.9
+link path=usr/lib/$(MACH64)/libncurses.so.5 target=libncurses.so.5.9
+link path=usr/lib/$(MACH64)/libpanel.so.5 target=libpanel.so.5.9
+link path=usr/lib/libform.so.5 target=libform.so.5.9
+link path=usr/lib/libmenu.so.5 target=libmenu.so.5.9
+link path=usr/lib/libncurses.so.5 target=libncurses.so.5.9
+link path=usr/lib/libpanel.so.5 target=libpanel.so.5.9

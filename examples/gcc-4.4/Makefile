@@ -20,8 +20,6 @@ build-depends += \
 	developer/gperf \
 	developer/build/autogen \
 
-
-
 configure-options += \
 --enable-languages='c,c++,fortran' \
 --enable-shared \

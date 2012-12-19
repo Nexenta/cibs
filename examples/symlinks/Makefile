@@ -1,7 +1,7 @@
 include /usr/share/cibs/rules/ips.mk
 include /usr/share/cibs/rules/git.mk
 include /usr/share/cibs/rules/patch.mk
-include /usr/share/cibs/rules/32.mk
+include /usr/share/cibs/rules/64.mk
 
 
 summary := scan/change symbolic links
@@ -26,6 +26,6 @@ build-%-stamp: download-stamp patch-stamp
 	touch $@
 
 install-%-stamp: build-%-stamp
-	mkdir -p $(protodir)/$(bindir)
-	cp $(builddir)/symlinks $(protodir)/$(bindir)
+	mkdir -p $(destdir)/$(bindir)
+	cp $(builddir)/symlinks $(destdir)/$(bindir)
 	touch $@

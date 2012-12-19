@@ -1,0 +1,58 @@
+set name=pkg.fmri value=pkg:/library/$(name)-base@$(ips-version)
+set name=pkg.summary value="$(summary), basic terminal type definitions"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+<transform file path=etc/.* -> set action.hash %(path) >
+
+
+# NOTE: moving from /etc into /lib
+<transform file path=etc/.* -> edit path etc/ lib/ >
+
+file path=etc/terminfo/E/Eterm 
+file path=etc/terminfo/a/ansi 
+file path=etc/terminfo/c/cons25 
+file path=etc/terminfo/c/cons25-debian 
+file path=etc/terminfo/c/cygwin 
+file path=etc/terminfo/d/dumb 
+file path=etc/terminfo/h/hurd 
+file path=etc/terminfo/l/linux 
+file path=etc/terminfo/m/mach 
+file path=etc/terminfo/m/mach-bold 
+file path=etc/terminfo/m/mach-color 
+file path=etc/terminfo/p/pcansi 
+file path=etc/terminfo/r/rxvt 
+file path=etc/terminfo/r/rxvt-basic 
+file path=etc/terminfo/s/screen 
+file path=etc/terminfo/s/screen-256color 
+file path=etc/terminfo/s/screen-256color-bce 
+file path=etc/terminfo/s/screen-bce 
+file path=etc/terminfo/s/screen-s 
+file path=etc/terminfo/s/screen-w 
+file path=etc/terminfo/s/sun 
+file path=etc/terminfo/s/sun-color 
+file path=etc/terminfo/v/vt100 
+file path=etc/terminfo/v/vt102 
+file path=etc/terminfo/v/vt220 
+file path=etc/terminfo/v/vt52 
+file path=etc/terminfo/w/wsvt25 
+file path=etc/terminfo/w/wsvt25m 
+file path=etc/terminfo/x/xterm 
+file path=etc/terminfo/x/xterm-256color 
+file path=etc/terminfo/x/xterm-color 
+file path=etc/terminfo/x/xterm-r5 
+file path=etc/terminfo/x/xterm-r6 
+file path=etc/terminfo/x/xterm-vt220 
+file path=etc/terminfo/x/xterm-xfree86 
+
+link target=Eterm path=lib/terminfo/E/Eterm-color
+link target=rxvt-base path=lib/terminfo/r/rxvt-m
+link target=xterm path=lib/terminfo/x/xterm-debian
+
+dir path=usr/share/tabset
+file path=usr/share/tabset/vt300
+file path=usr/share/tabset/stdcrt
+file path=usr/share/tabset/std
+file path=usr/share/tabset/vt100

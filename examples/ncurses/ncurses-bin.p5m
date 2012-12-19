@@ -1,0 +1,27 @@
+set name=pkg.fmri value=pkg:/terminal/$(name)-bin@$(ips-version)
+set name=pkg.summary value="$(summary), terminal-related programs and man pages"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+file path=usr/bin/clear
+file path=usr/bin/infocmp
+file path=usr/bin/tabs
+file path=usr/bin/tic
+file path=usr/bin/toe
+file path=usr/bin/tput
+file path=usr/bin/tset
+file path=usr/share/man/man1/captoinfo.1m
+file path=usr/share/man/man1/clear.1
+file path=usr/share/man/man1/infocmp.1m
+file path=usr/share/man/man1/infotocap.1m
+file path=usr/share/man/man1/tabs.1
+file path=usr/share/man/man1/tic.1m
+file path=usr/share/man/man1/toe.1m
+file path=usr/share/man/man1/tput.1
+file path=usr/share/man/man1/tset.1
+link path=usr/bin/captoinfo target=tic
+link path=usr/bin/infotocap target=tic
+link path=usr/bin/reset target=tset
+link path=usr/share/man/man1/reset.1 target=tset.1

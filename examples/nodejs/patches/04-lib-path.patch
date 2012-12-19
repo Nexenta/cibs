@@ -1,0 +1,24 @@
+diff -dubr source/lib/module.js libpath/lib/module.js
+--- source/lib/module.js	2012-10-26 00:49:32.000000000 +0400
++++ libpath/lib/module.js	2012-11-01 23:30:34.638509805 +0400
+@@ -493,7 +493,7 @@
+ };
+ 
+ Module._initPaths = function() {
+-  var paths = [path.resolve(process.execPath, '..', '..', 'lib', 'node')];
++  var paths = ['/usr/lib/nodejs'];
+ 
+   if (process.env['HOME']) {
+     paths.unshift(path.resolve(process.env['HOME'], '.node_libraries'));
+diff -dubr source/tools/wafadmin/Tools/node_addon.py libpath/tools/wafadmin/Tools/node_addon.py
+--- source/tools/wafadmin/Tools/node_addon.py	2012-11-01 23:22:54.032306132 +0400
++++ libpath/tools/wafadmin/Tools/node_addon.py	2012-11-01 23:29:37.203544596 +0400
+@@ -70,7 +70,7 @@
+     nodePath = None
+     if not os.environ.has_key('NODE_PATH'):
+         if not os.environ.has_key('HOME'):
+-            nodePath = join(get_prefix(), 'lib', 'node')
++            nodePath = join(get_prefix(), 'lib', 'nodejs')
+         else:
+             nodePath = join(os.environ['HOME'], '.node_libraries')
+     else:

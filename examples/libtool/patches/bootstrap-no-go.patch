@@ -1,0 +1,12 @@
+Description: Go is not supported before LT 2.4
+diff -dubr source/configure.ac nogo/configure.ac
+--- source/configure.ac	2011-10-17 14:17:17.000000000 +0400
++++ nogo/configure.ac	2012-10-13 00:29:40.973202656 +0400
+@@ -196,7 +196,6 @@
+ LT_LANG(C++)
+ LT_LANG(Fortran 77)
+ LT_LANG(Fortran)
+-LT_LANG(Go)
+ LT_LANG(Java)
+ LT_LANG(Windows Resource)
+ 
