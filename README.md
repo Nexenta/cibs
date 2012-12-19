@@ -118,6 +118,20 @@ You can tune building by defining variables like `configure-options.FOO`, e. g.:
     configure-options.gnu = --without-ssl --with-gnutls
     configure-options.ssl = --with-ssl --without-gnutls
 
+## autotools.mk
+
+This module defines configure, build and install targets by GNU autotools.
+These targets are implicit (e. g. `configure-%-stamp`), and you can completely
+override any of them by explicit target (e. g. `configure-foo-stamp`) in the top Makefile.
+Build and install targets use target-specific variable `target` for invoking `make`.
+This variable is empty for `build-%-stamp` and is set to "install" for `install-%-stamp`.
+You can redefine it in the top Makefile to build/install only a subset of a package. E. g.
+for NCurses with wide character support this will build and install only libraries (without
+programs and terminal database):
+
+    $(eval $(call add-variant,wide))
+    build-wide-stamp: target = libs
+    install-wide-stamp: target = install.libs
 
 ## ips.mk
 
