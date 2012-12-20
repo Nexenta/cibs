@@ -123,6 +123,17 @@ You can tune building by defining variables like `configure-options.FOO`, e. g.:
 This module defines configure, build and install targets by GNU autotools.
 These targets are implicit (e. g. `configure-%-stamp`), and you can completely
 override any of them by explicit target (e. g. `configure-foo-stamp`) in the top Makefile.
+
+Variable `configure` holds the name of the configure script ("$(sourcedir)/configure" by default).
+You can redefine it if the configure script is not in the top source directory or has a different name.
+
+Use the `configure-options` variable to append or replace options passed to the configure script.
+Use the `configure-options.<variant>` to define variant specific options (see above).
+
+Variable `configure-env` holds environment variables for the configure script,
+such as CC, CFLAGS, LDFLAGS etc. As usual, you can append or completely replace them.
+Use the `configure-env.<variant>` to define variant specific environment variant.
+
 Build and install targets use target-specific variable `target` for invoking `make`.
 This variable is empty for `build-%-stamp` and is set to "install" for `install-%-stamp`.
 You can redefine it in the top Makefile to build/install only a subset of a package. E. g.
