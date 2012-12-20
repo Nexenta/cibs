@@ -56,13 +56,15 @@ configure-%-stamp:
 	touch $@
 
 build-%-stamp: target =
+build-%-stamp: make-vars = V=1
 build-%-stamp:
-	cd "$(builddir)" && $(MAKE) $(make-jobs:%=-j%) $(target) V=1
+	cd "$(builddir)" && $(MAKE) $(make-jobs:%=-j%) $(target) $(make-vars)
 	touch $@
 
 install-%-stamp: target = install
+install-%-stamp: make-vars = DESTDIR="$(protodir)"
 install-%-stamp:
-	cd "$(builddir)" && $(MAKE) $(target) DESTDIR="$(protodir)"
+	cd "$(builddir)" && $(MAKE) $(target) $(make-vars)
 	touch $@
 
 

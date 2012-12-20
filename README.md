@@ -133,6 +133,13 @@ programs and terminal database):
     build-wide-stamp: target = libs
     install-wide-stamp: target = install.libs
 
+Another target-specific variable is "make-vars". The value of this variable
+is appended to make command. By default it is set to `V=1`
+for `build-%-stamp` (disable silent rules) and to `DESTDIR="$(protodir)"` for
+`install-%-stamp`. You can append or completely replace "make-vars" to
+make hacks or when you are using autotools.mk for packages which are not
+actually use autotools, but some hand-made configure scripts.
+
 ## ips.mk
 
 This module provides functions to work with IPS manifests and publish packages.
