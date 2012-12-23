@@ -38,12 +38,12 @@ configure-env = \
 
 
 configure-options = \
-	--prefix="$(prefix)" \
-	--libdir="$(libdir)" \
-	--bindir="$(bindir)" \
+	--prefix=$(prefix) \
+	--libdir=\$${prefix}/lib$(lib-suffix.$(variant)) \
+	--bindir=\$${prefix}/bin \
 	--includedir=\$${prefix}/include \
-	--infodir=/usr/share/info \
 	--mandir=\$${prefix}/share/man \
+	--infodir=/usr/share/info \
 	--localstatedir=/var \
 	$(configure-options.$(variant)) \
 

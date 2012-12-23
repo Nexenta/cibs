@@ -77,21 +77,18 @@ export CFLAGS = -O2 $(CFLAGS.$(variant))
 export CXXFLAGS = -O2 $(CXXFLAGS.$(variant))
 
 prefix = /usr
-libdir.32 = $(prefix)/lib/$(mach32)
-libdir.64 = $(prefix)/lib/$(mach64)
-bindir.32 = $(prefix)/bin
-bindir.64 = $(prefix)/bin
-includedir = /usr/include
-libdir.noarch = $(prefix)/lib
-bindir.noarch = $(prefix)/bin
+
+lib-suffix.noarch =
+lib-suffix.32 =
+lib-suffix.64 = /$(mach64)
+
+libdir = $(prefix)/lib$(lib-suffix.$(variant))
 
 PKG_CONFIG_PATH.32 = /usr/gnu/lib/$(mach32)/pkgconfig:/usr/lib/$(mach32)/pkgconfig
 PKG_CONFIG_PATH.64 = /usr/gnu/lib/$(mach64)/pkgconfig:/usr/lib/$(mach64)/pkgconfig
 export PKG_CONFIG_PATH = PKG_CONFIG_PATH.$(bits)
 
 # $(bits) are target-specific and defined in 32.mk or 64.mk
-bindir     = $(bindir.$(bits))
-libdir     = $(libdir.$(bits))
 CC         = $(CC.$(bits))
 CXX        = $(CXX.$(bits))
 
