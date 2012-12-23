@@ -31,8 +31,8 @@ build-depends += archiver/gnu-tar
 
 archive-validator := $(cibs-root)/scripts/validate-archive
 validate-%-stamp: download-%-stamp
-	if [ -n "$(checksum_$*)" ]; then \
-		$(archive-validator) $* $(checksum_$*) ; \
+	if [ -n "$(checksum-$*)" ]; then \
+		$(archive-validator) $* $(checksum-$*) ; \
 	elif [ -n "$(checksum)" ]; then \
 		$(archive-validator) $* $(checksum) ; \
 	else \
@@ -49,8 +49,8 @@ archive-downloader := $(cibs-root)/scripts/download-archive
 downloader-mirrors = $(mirrors:%=-m %)
 download-%-stamp:
 	if ! [ -f '$*' ]; then \
-		if [ -n '$(download_$*)' ]; then \
-		$(archive-downloader) -a '$*' $(downloader-mirrors) -d '$(download_$*)'; \
+		if [ -n '$(download-$*)' ]; then \
+		$(archive-downloader) -a '$*' $(downloader-mirrors) -d '$(download-$*)'; \
 		elif [ -n '$(download)' ]; then \
 		$(archive-downloader) -a '$*' $(downloader-mirrors) -d '$(download)'; \
 		else \
@@ -66,19 +66,29 @@ download: download-stamp
 
 archive-unpacker := $(cibs-root)/scripts/unpack-archive
 unpack-%-stamp: validate-%-stamp check-build-dep-stamp
-	$(archive-unpacker) $* $(sourcedir_$*) $(sourcedir)
+	if [ -n "$(sourcedir-$*)" ]; then \
+		$(archive-unpacker) "$*" "$(sourcedir-$*)"; \
+	elif [ -n "$(sourcedir)" ]; then \
+		$(archive-unpacker) "$*" "$(sourcedir)"; \
+	else \
+		echo '** ERROR: No "sourcedir" variable is set'; false; \
+	fi; \
 	touch $@
 
 unpack-stamp: $$(addprefix unpack-,$$(addsuffix -stamp,$$(archives) $$(archive)))
 pre-configure-stamp: unpack-stamp check-build-dep-stamp
 
-checksum: download-stamp
+print-info: download-stamp
 	@echo '# Insert this into Makefile:'
-	@echo 'checksum := \'
-	@printf "     md5:"; md5sum "$(archive)" | awk '{print $$1 " \\"}'
-	@printf "    sha1:"; sha1sum "$(archive)" | awk '{print $$1 " \\"}'
-	@printf "  sha256:"; sha256sum "$(archive)" | awk '{print $$1 " \\"}'
-	@printf "    size:"; stat -c '%s' "$(archive)"
+checksum-%: print-info
+	@echo 'checksum-$* := \'
+	@printf "     md5:"; md5sum "$*" | awk '{print $$1 " \\"}'
+	@printf "    sha1:"; sha1sum "$*" | awk '{print $$1 " \\"}'
+	@printf "  sha256:"; sha256sum "$*" | awk '{print $$1 " \\"}'
+	@printf "    size:"; stat -c '%s' "$*"
+	@echo
+
+checksum: $$(addprefix checksum-,$$(archives) $$(archive))
 
 __archive_mk := included
 endif
