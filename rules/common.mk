@@ -82,7 +82,7 @@ lib-suffix.noarch =
 lib-suffix.32 =
 lib-suffix.64 = /$(mach64)
 
-libdir = $(prefix)/lib$(lib-suffix.$(variant))
+libdir = $(prefix)/lib$(lib-suffix.$(bits))
 
 PKG_CONFIG_PATH.32 = /usr/gnu/lib/$(mach32)/pkgconfig:/usr/lib/$(mach32)/pkgconfig
 PKG_CONFIG_PATH.64 = /usr/gnu/lib/$(mach64)/pkgconfig:/usr/lib/$(mach64)/pkgconfig

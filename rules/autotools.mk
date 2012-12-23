@@ -39,7 +39,7 @@ configure-env = \
 
 configure-options = \
 	--prefix=$(prefix) \
-	--libdir=\$${prefix}/lib$(lib-suffix.$(variant)) \
+	--libdir=\$${prefix}/lib$(lib-suffix.$(bits)) \
 	--bindir=\$${prefix}/bin \
 	--includedir=\$${prefix}/include \
 	--mandir=\$${prefix}/share/man \
