@@ -1,12 +1,16 @@
 # For bootstrapping:
 cibs-root := .
 
+# Define to "deb" to build a deb package:
+# gmake package=deb
+package ?= ips
 
 # This is it forever ever:
 cibs-inst-root := /usr/share/cibs
 
-include $(cibs-root)/rules/ips.mk
+include $(cibs-root)/rules/$(package).mk
 
+version := 0.2.0
 
 install-stamp: rules-mogrify-stamp
 
