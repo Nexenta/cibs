@@ -1,0 +1,74 @@
+#!/bin/sh
+
+set -e
+set -u
+
+src=''
+dst=''
+
+usage () {
+cat << USAGE
+Moves files and directories using GNU Tar.
+Usage:
+$0 -s sourcedir -d destdir files ...
+USAGE
+exit 1
+}
+
+fatal () {
+    echo "$@" >&2
+    echo "Type \`$0 -h' to get help." >&2
+    exit 2
+}
+
+while getopts hd:s: opt; do
+    case "$opt" in
+        s) src="$OPTARG";;
+        d) dst="$OPTARG";;
+        *) usage;;
+    esac
+done
+shift $OPTIND-1
+
+
+if [ -z "$src" ]; then
+    fatal "Missing source directory."
+fi
+if ! [ -e "$src" ]; then
+    fatal "\`$src' does not exist."
+fi
+if ! [ -d "$src" ]; then
+    fatal "\`$src' is not a directory."
+fi
+if [ -z "$dst" ]; then
+    fatal "Missing destination directory."
+fi
+if ! [ -e "$dst" ]; then
+    fatal "\`$dst' does not exist."
+fi
+if ! [ -d "$dst" ]; then
+    fatal "\`$dst' is not a directory."
+fi
+
+src_n=`cd "$src" && pwd`
+dst_n=`cd "$dst" && pwd`
+
+if [ "$src_n" = "$dst_n" ]; then
+    fatal "\`$src' and \`$dst' are the same."
+fi
+
+list="/tmp/cibs-movelist.$$"
+
+rm -f "$list"
+
+for f in "$@"; do
+    ( set -x; cd "$src_n" && gfind $f ! -type d -print || true ) >> "$list"
+done
+
+( set -e; set -x; cd "$src_n" && gtar cf - -T "$list" ) | \
+    ( set -e; set -x; cd "$dst_n" && gtar xf - )
+
+(set -e; set -x; cd "$src_n" && cat "$list" | xargs rm -f )
+
+exit 0
+
