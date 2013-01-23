@@ -649,7 +649,7 @@ foreach my $manifest_file (@ARGV) {
             if (grep($$dir{'owner'} eq $$_{'username'}, @users) ||
                 grep($$dir{'group'} eq $$_{'groupname'}, @groups))
             {
-                my $cmd = "chown $$dir{'owner'}:$$dir{'group'} '/$$dir{'path'}'";
+                my $cmd = "\$CHROOT chown $$dir{'owner'}:$$dir{'group'} '/$$dir{'path'}'";
                 warning "will chown in postinstall: $cmd";
                 $postinst_configure .= $cmd . " || true\n";
             } else {
@@ -688,7 +688,7 @@ foreach my $manifest_file (@ARGV) {
             if (grep($$file{'owner'} eq $$_{'username'}, @users) ||
                 grep($$file{'group'} eq $$_{'groupname'}, @groups))
             {
-                my $cmd = "chown $$file{'owner'}:$$file{'group'} '/$$file{'path'}'";
+                my $cmd = "\$CHROOT chown $$file{'owner'}:$$file{'group'} '/$$file{'path'}'";
                 warning "will chown in postinstall: $cmd";
                 $postinst_configure .= $cmd . " || true\n";
             } else {
@@ -714,8 +714,6 @@ foreach my $manifest_file (@ARGV) {
             if (!my_hardlink $$link{'target'}, "$pkgdir/$$link{'path'}") {
                 warning "Adding code to create hardlink at post-install phase";
                 push @hl_script, $link;
-            } else {
-                push @replaces, get_debpkg_name $$link{original_name} if exists $$link{original_name};
             }
         }
         if (@hl_script) {
@@ -752,7 +750,6 @@ foreach my $manifest_file (@ARGV) {
                 $prerm .= 'if [ "$1" = remove ]; then $CHROOT update-alternatives --remove ' . "$n $p || true; fi\n";
             } else {
                 my_symlink $$link{'target'}, "$pkgdir/$$link{'path'}";
-                push @replaces, get_debpkg_name $$link{original_name} if exists $$link{original_name};
             }
         }
     }
@@ -932,7 +929,7 @@ CHECK_SMF
 
     my $pkg_deb = "${pkgdir}_${debversion}_${ARCH}.deb";
     # FIXME: we need GNU tar
-    shell_exec "PATH=/usr/gnu/bin:/usr/bin dpkg-deb -b '$pkgdir' '$pkg_deb'";
+    shell_exec "PATH=/usr/gnu/bin:/usr/bin dpkg-deb -Zbzip2 -b '$pkgdir' '$pkg_deb'";
     shell_exec "rm -r -f '$pkgdir'";
 
     my $md5sum = get_output_line "md5sum    $pkg_deb | cut -d' ' -f1";
