@@ -27,7 +27,7 @@ ifeq (,$(__autotools_mk))
 include $(cibs-root)/rules/common.mk
 
 
-configure := $(sourcedir)/configure
+configure := $(topdir)/$(sourcedir)/configure
 configure-env = \
 	CC="$(CC)" \
 	CXX="$(CXX)" \
@@ -62,7 +62,7 @@ build-%-stamp:
 	touch $@
 
 install-%-stamp: target = install
-install-%-stamp: make-vars = DESTDIR="$(protodir)"
+install-%-stamp: make-vars = DESTDIR="$(topdir)/$(protodir)"
 install-%-stamp:
 	cd "$(builddir)" && $(MAKE) $(target) $(make-vars)
 	touch $@

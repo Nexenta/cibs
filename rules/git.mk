@@ -24,8 +24,6 @@
 # include guard
 ifeq (,$(__git_mk))
 
-protodirs += $(sourcedir)
-
 build-depends += developer/versioning/git
 
 download-stamp: check-build-dep-stamp

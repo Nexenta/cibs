@@ -49,16 +49,18 @@ pkg-define += \
 -D build64="$(build64)" \
 
 # Add $(protodir.<variant>) to use in manifest:
-# file $(protodir.64) path=usr/include/header.64.h
-pkg-define += $(foreach _,$(variants),-D protodir.$(_)="$(protodir-base.$(_))")
+# file $(protodir.64)/usr/include/header.h path=usr/include/header.64.h
+pkg-define += $(foreach _,$(variants),-D protodir.$(_)="$(protodir.$(_))")
 
 # Same for $(builddir.xxx):
-pkg-define += $(foreach _,$(variants),-D builddir.$(_)="$(builddir-base.$(_))")
+pkg-define += $(foreach _,$(variants),-D builddir.$(_)="$(builddir.$(_))")
+
+pkg-define += -D sourcedir="$(sourcedir)"
 
 # Where to find files:
-pkg-protos = $(protodirs:%=-d "%")
+pkg-protos = -d .
+pkg-protos += $(protodirs:%=-d "%")
 pkg-protos += $(foreach _,$(variants),-d "$(protodir.$(_))")
-pkg-protos += -d .
 
 transformations := \
 $(transdir)/defaults \

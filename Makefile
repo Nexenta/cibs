@@ -10,7 +10,7 @@ cibs-inst-root := /usr/share/cibs
 
 include $(cibs-root)/rules/$(package).mk
 
-version := 0.2.0
+version := 0.3.0
 
 install-stamp: rules-mogrify-stamp
 

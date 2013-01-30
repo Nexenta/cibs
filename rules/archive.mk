@@ -26,7 +26,6 @@ ifeq (,$(__archive_mk))
 
 .SECONDEXPANSION:
 
-protodirs += $(sourcedir)
 build-depends += archiver/gnu-tar
 
 archive-validator := $(cibs-root)/scripts/validate-archive

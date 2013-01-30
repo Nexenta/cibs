@@ -18,7 +18,7 @@
 # CDDL HEADER END
 #
 #
-# Copyright (C) 2012, Nexenta Systems, Inc. All rights reserved.
+# Copyright (C) 2012, 2013. Nexenta Systems, Inc. All rights reserved.
 #
 
 # include guard:
@@ -42,13 +42,11 @@ mach64 := amd64
 
 variants :=
 
-workdir-base := work
-workdir   := $(CURDIR)/$(workdir-base)
+topdir := $(CURDIR)
+workdir   := work
 sourcedir := $(workdir)/source
 
 define add-variant
-protodir-base.$1 = $(workdir-base)/proto/$1
-builddir-base.$1 = $(workdir-base)/build/$1
 protodir.$1 = $(workdir)/proto/$1
 builddir.$1 = $(workdir)/build/$1
 
