@@ -406,7 +406,7 @@ sub get_pkg_section {
         return $1;
     } else {
         warning "Can't get section for package `$pkgname'";
-        return 0;
+        return '';
     }
 }
 
