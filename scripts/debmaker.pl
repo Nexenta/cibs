@@ -405,7 +405,8 @@ sub get_pkg_section {
     } elsif ($pkgname =~ m,^pkg:/([^/]+)/.*,) {
         return $1;
     } else {
-        fatal "Can't get section for package `$pkgname'"
+        warning "Can't get section for package `$pkgname'";
+        return 0;
     }
 }
 
