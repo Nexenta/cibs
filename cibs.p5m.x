@@ -1,7 +1,7 @@
 #!/bin/sh
 
-cat <<META
-set name=pkg.fmri value=pkg:/developer/pkg/cibs@0.1.0
+cat <<'META'
+set name=pkg.fmri value=pkg:/developer/pkg/cibs@$(ips-version)
 set name=pkg.summary value="Common IPS build system"
 set name=info.upstream-url value="https://github.com/Nexenta/cibs"
 set name=info.source-url value="https://github.com/Nexenta/cibs.git"
