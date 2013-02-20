@@ -20,14 +20,14 @@
 # CDDL HEADER END
 #
 #
-# Copyright (C) 2012, Nexenta Systems, Inc. All rights reserved.
+# Copyright (C) 2013, Nexenta Systems, Inc. All rights reserved.
 #
 
 use 5.010;
 use strict;
 use warnings FATAL => 'all';
 use integer;
-use Cwd;
+use Cwd qw/realpath getcwd/;
 use File::Basename;
 use File::Copy;
 use File::Path 'mkpath';
@@ -424,41 +424,57 @@ sub find_pkgs_with_paths {
     return $dpkg;
 }
 
-#FIXME : If we have 64-bit library, we have 32-bit as well, so check only 32-bit:
 my @librarypaths = qw(/lib /usr/lib /usr/gnu/lib);
+sub get_lib_deps {
+    my ($file) = @_;
+    my @files = ();
+    my @libs = ();
+
+    # Get needed libraries:
+    if (open(my $dump, "elfdump -d \"$file\" |")) {
+        while (<$dump>) {
+            if (/NEEDED\s+\S+\s+(\S+)/) {
+                push @libs, $1
+            };
+        }
+        close ($dump);
+    }
+    if (not @libs) {
+        warning "$file does not depend on any library";
+        return ();
+    }
+    blab "$file needs: " . join(', ', @libs);
+
+    # ldd prints all required libraries, we pick only
+    # direct dependencies:
+    if (open(my $ldd, "ldd \"$file\" |")) {
+        while (<$ldd>) {
+            if (/(\S+)\s+=>\s+(\S+)/) {
+                if ($1 ~~ @libs) {
+                    my $real = realpath($2);
+                    push @files, $real;
+                    blab "found $1 => $real";
+                }
+            };
+        }
+        close ($ldd);
+    }
+
+    return @files;
+}
 sub guess_required_deps {
     my ($path) = @_;
-    my $elfs = get_output "gfind $path -type f -exec file {} \\; | ggrep ELF | cut -d: -f1";
-    my @deps = ();
-    my @libraries = ();
-    if (@$elfs) {
-        my $libs = get_output "elfdump -d @$elfs | ggrep -E '(NEEDED|SUNW_FILTER)' | awk '{print \$4}' | sort -u";
-        my $rpath = get_output "elfdump -d @$elfs | grep RPATH | awk '{print \$4}' | gsed  's,:,\\n,g' | sort -u | grep -v usr/sfw/lib";
-        blab "rpath: @$rpath";
-        push @librarypaths, @$rpath;
-        uniq \@librarypaths;
-        blab 'Required libs: ' . join(', ', @$libs);
-        blab 'Library search paths: ' . join(', ', @librarypaths);
-        foreach my $l (@$libs) {
-            my $found = '';
-            foreach my $p (@librarypaths) {
-                if (-e "$p/$l") {
-                    $found = "$p/$l";
-                    last;
-                }
-            }
-            if ($found) {
-                blab "found $found";
-                push @libraries, $found;
-            } else {
-                # FIXME : What is library is in package being built?
-                warning "Could not find library $l";
-            }
-        }
-        my $pkgs = find_pkgs_with_paths @libraries;
-        push @deps, @$pkgs;
+    my $elfs = get_output "find $path -type f -exec file {} \\; | grep ELF | cut -d: -f1";
+    my @files = ();
+    my $deps = [];
+    foreach my $e (@$elfs) {
+        push @files,  get_lib_deps($e);
     }
-    return \@deps;
+    if (@files) {
+        uniq \@files;
+        $deps = find_pkgs_with_paths(@files);
+    }
+    return @$deps;
 }
 
 sub get_shlib {
@@ -468,7 +484,7 @@ sub get_shlib {
 
     my $libs = get_output "gfind $dir -type f -name '*.so.*'";
     if (@$libs) {
-        my $sonames = get_output "elfdump -d @$libs | ggrep SONAME | awk '{print \$4}' | sort -u";
+        my $sonames = get_output "elfdump -d @$libs | grep SONAME | awk '{print \$4}' | sort -u";
         $res = join "\n", map { /^(.+)\.so\.(.+)$/; "$1 $2 $pkg" } @$sonames;
     }
     return $res;
@@ -811,7 +827,7 @@ foreach my $manifest_file (@ARGV) {
             push @conflicts,  $dep_pkg if $$dep{'type'} eq 'exclude';
         }
     }
-    push @depends, @{guess_required_deps($pkgdir)};
+    push @depends, guess_required_deps($pkgdir);
 
     uniq \@depends, \@replaces, \@provides, \@predepends, \@recommends, \@suggests, \@conflicts;
     uniq \@restart_fmri, \@refresh_fmri, \@suspend_fmri, \@disable_fmri;
