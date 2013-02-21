@@ -217,18 +217,11 @@ my %DEFINES = ();
 # (like debian/pkg-name)
 my $OUTDIR = '';
 
-# If true, will use manifests from command line
-# to resolve dependencies:
-my $BOOTSTRAP = 0;
-
 my $MAINTAINER = 'Nexenta Systems <maintainer@nexenta.com>';
 my $VERSION = '0.0.0';
 my $ARCH = 'solaris-i386';
 my $SOURCE = 'xxx'; # only for *.changes
-my $DISTRIB = 'nza-userland';
-
-# Mapping file => IPS FMRI, filled on bootstrap:
-my %PATHS = ();
+my $DISTRIB = 'NSB';
 
 GetOptions (
     'd=s' => \@PROTO_DIRS,
@@ -238,7 +231,6 @@ GetOptions (
     'M=s' => \$MAINTAINER,
     'S=s' => \$SOURCE,
     'N=s' => \$DISTRIB,
-    'bootstrap!' => \$BOOTSTRAP,
     'D=s' => \%DEFINES,
     'help|h' => sub {usage()},
 ) or usage();
@@ -275,10 +267,6 @@ Options:
 
     -M <maintainer>    Package maintainer - mandatory for debs,
                        default is `$MAINTAINER'
-   
-    --bootstrap        Search for dependencies within listed manifests,
-                       not within installed system (for bootstraping)
-                       ** not implemented yet **
 
     -h, --help         Show help info
 
@@ -495,36 +483,6 @@ if (!$OUTDIR) {
 }
 if (! -d $OUTDIR) {
     fatal "Not a directory: `$OUTDIR'"
-}
-
-# Walk through all manifests
-# and collect files, symlinks, hardlink
-# mapping them to package names:
-if ($BOOTSTRAP) {
-    blab "Bootstrap: collecting paths ...";
-    foreach my $manifest_file (@ARGV) {
-        my $manifest_data = read_manifest $manifest_file;
-        my $fmri = $$manifest_data{'pkg.fmri'};
-        my @items = ();
-        if (my @files = @{$$manifest_data{'file'}}) {
-            push @items, @files;
-        }
-        if (my @symlinks = @{$$manifest_data{'link'}}) {
-            push @items, @symlinks;
-        }
-        if (my @hardlinks = @{$$manifest_data{'hardlink'}}) {
-            push @items, @hardlinks;
-        }
-        foreach my $item (@items) {
-            my $path = $$item{'path'};
-            if (exists $PATHS{$path}) {
-                warning "`$path' already present in `$PATHS{$path}' and now found in `$fmri' (manifest `$manifest_file')"
-            } else {
-                $PATHS{$path} = $fmri;
-            }
-        }
-    }
-    blab 'Bootstrap: ' . (keys %PATHS) . ' known paths'
 }
 
 
