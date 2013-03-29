@@ -825,7 +825,7 @@ foreach my $manifest_file (@ARGV) {
     $control .= "Origin: $$manifest_data{'info.upstream_url'}\n"
         if exists $$manifest_data{'info.upstream_url'};
     $control .= "X-FMRI: $$manifest_data{'pkg.fmri'}\n";
-    $control .= "X-Upstream-Version: $DEFINES{'COMPONENT_VERSION'}\n";
+    $control .= "X-Upstream-Version: $DEFINES{'COMPONENT_VERSION'}\n" if exists $DEFINES{'COMPONENT_VERSION'};
 
     if (exists $$manifest_data{'info.source_url'}
         && $$manifest_data{'info.source_url'} !~ /^file:/
