@@ -122,7 +122,7 @@ glob-stamp: $(glob-manifests)
 
 mogrified-manifests := $(manifests:%=$(manifestdir)/mogrified-%)
 $(manifestdir)/mogrified-% : $(manifestdir)/glob-%
-	pkgmogrify $(pkg-define) \
+	pkgmogrify $(pkg-define) -I. \
 		$(transformations) \
 		$< | \
 		sed -e '/^$$/d' -e '/^#.*$$/d' | uniq > $@ || (rm -f $@; false)
