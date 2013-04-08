@@ -104,3 +104,6 @@ set name=variant.arch value=$(MACH)
 set name=variant.elf32 value=true
 set name=variant.elf64 value=true
 
+# Do not ship compiled python modules
+<transform file path=.+\.py[co]$ -> drop>
+
