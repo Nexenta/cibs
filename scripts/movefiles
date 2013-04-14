@@ -62,7 +62,7 @@ list="/tmp/cibs-movelist.$$"
 rm -f "$list"
 
 for f in "$@"; do
-    ( set -x; cd "$src_n" && gfind $f ! -type d -print || true ) >> "$list"
+    ( set -e; set -x; cd "$src_n" && gfind $f ! -type d -print ) >> "$list"
 done
 
 ( set -e; set -x; cd "$src_n" && gtar cf - -T "$list" ) | \
