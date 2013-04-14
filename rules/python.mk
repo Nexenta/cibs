@@ -25,7 +25,7 @@ ifeq (,$(__python_mk))
 
 include $(cibs-root)/rules/common.mk
 
-pythons ?= python2.6 python
+pythons ?= python2.7
 
 $(foreach py,$(pythons),$(eval $(call add-variant,$(py))))
 
@@ -37,7 +37,7 @@ build-%-stamp:
 
 install-%-stamp:
 	cd "$(sourcedir)" && \
-		$* setup.py install --install-layout=deb --no-compile -O0 --root="$(protodir)"
+		$* setup.py install --install-layout=deb --no-compile -O0 --root="$(topdir)/$(protodir)"
 	touch $@
 
 __python_mk := included
