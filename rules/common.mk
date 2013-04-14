@@ -24,6 +24,8 @@
 # include guard:
 ifeq (,$(__common_mk))
 
+.SECONDEXPANSION:
+
 skip := \#
 
 build32 := $(skip)
@@ -61,6 +63,8 @@ install-$1-stamp   : build-$1-stamp
 variants += $1
 
 %-$1-stamp: variant = $1
+%-$1-stamp: protodir = $$(protodir.$1)
+%-$1-stamp: builddir = $$(builddir.$1)
 
 endef
 
