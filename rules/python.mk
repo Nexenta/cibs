@@ -25,7 +25,7 @@ ifeq (,$(__python_mk))
 
 include $(cibs-root)/rules/common.mk
 
-pythons ?= python2.7
+pythons ?= python
 
 $(foreach py,$(pythons),$(eval $(call add-variant,$(py))))
 
