@@ -102,15 +102,16 @@ protodir   = $(protodir.$(variant))
 # Common targets for internal usage.
 # Some modules (e. g. 32.mk, autotools.mk) add dependencies
 # to this, for example configure with autotools
-check-build-dep-stamp unpack-stamp patch-stamp pre-configure-stamp configure-stamp build-stamp install-stamp:
+check-build-dep-stamp unpack-stamp patch-stamp pre-configure-stamp configure-stamp build-stamp install-stamp post-install-stamp:
 	touch $@
 
-install-stamp   : build-stamp
-build-stamp     : configure-stamp
-configure-stamp : pre-configure-stamp
+post-install-stamp  : install-stamp
+install-stamp       : build-stamp
+build-stamp         : configure-stamp
+configure-stamp     : pre-configure-stamp
 pre-configure-stamp : patch-stamp unpack-stamp
-patch-stamp     : unpack-stamp
-unpack-stamp    : check-build-dep-stamp
+patch-stamp         : unpack-stamp
+unpack-stamp        : check-build-dep-stamp
 
 # Common target to use from command line
 # or in component top-level Makefile:
