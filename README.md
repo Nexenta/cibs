@@ -204,6 +204,15 @@ Makefile should define two variables:
 
 For example see "examples/symlinks".
 
+## hg.mk
+
+Same as `git.mk`, but for [Mercurial](http://mercurial.selenic.com/)
+
+Makefile should define two variables:
+
+* `hg-url` - URL of mercurial repository, used as `hg clone $(hg-url) $(sourcedir)`
+* `hg-update` - Mercurial tag, branch or commit; used as `hg update $(hg-update)`
+
 ## copy.mk
 
 If this module is included, entire source tree will be copied
