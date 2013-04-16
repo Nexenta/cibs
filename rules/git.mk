@@ -30,7 +30,7 @@ download-stamp: check-build-dep-stamp
 unpack-stamp: download-stamp
 
 download-stamp:
-	git clone $(git-url) $(sourcedir)
+	[ -d $(sourcedir) ] || git clone $(git-url) $(sourcedir)
 	cd $(sourcedir) && git checkout $(git-checkout)
 	touch $@
 download: download-stamp
