@@ -1,0 +1,1062 @@
+diff -urN a/Include/node.h b/Include/node.h
+--- a/Include/node.h	2012-12-25 13:41:08.431405725 +0100
++++ b/Include/node.h	2012-12-25 13:48:19.839405366 +0100
+@@ -20,9 +20,6 @@
+ PyAPI_FUNC(int) PyNode_AddChild(node *n, int type,
+                                       char *str, int lineno, int col_offset);
+ PyAPI_FUNC(void) PyNode_Free(node *n);
+-#ifndef Py_LIMITED_API
+-Py_ssize_t _PyNode_SizeOf(node *n);
+-#endif
+ 
+ /* Node access functions */
+ #define NCH(n)		((n)->n_nchildren)
+diff -urN a/Lib/test/test_array.py b/Lib/test/test_array.py
+--- a/Lib/test/test_array.py	2012-12-25 13:41:08.471405725 +0100
++++ b/Lib/test/test_array.py	2012-12-25 13:48:09.671405378 +0100
+@@ -985,19 +985,6 @@
+         upper = long(pow(2, a.itemsize * 8)) - 1L
+         self.check_overflow(lower, upper)
+ 
+-    @test_support.cpython_only
+-    def test_sizeof_with_buffer(self):
+-        a = array.array(self.typecode, self.example)
+-        basesize = test_support.calcvobjsize('4P')
+-        buffer_size = a.buffer_info()[1] * a.itemsize
+-        test_support.check_sizeof(self, a, basesize + buffer_size)
+-
+-    @test_support.cpython_only
+-    def test_sizeof_without_buffer(self):
+-        a = array.array(self.typecode)
+-        basesize = test_support.calcvobjsize('4P')
+-        test_support.check_sizeof(self, a, basesize)
+-
+ 
+ class ByteTest(SignedNumberTest):
+     typecode = 'b'
+diff -urN a/Lib/test/test_deque.py b/Lib/test/test_deque.py
+--- a/Lib/test/test_deque.py	2012-12-25 13:41:08.471405725 +0100
++++ b/Lib/test/test_deque.py	2012-12-25 13:48:19.843405367 +0100
+@@ -6,7 +6,6 @@
+ import copy
+ import cPickle as pickle
+ import random
+-import struct
+ 
+ BIG = 100000
+ 
+@@ -518,21 +517,6 @@
+             gc.collect()
+             self.assertTrue(ref() is None, "Cycle was not collected")
+ 
+-    check_sizeof = test_support.check_sizeof
+-
+-    @test_support.cpython_only
+-    def test_sizeof(self):
+-        BLOCKLEN = 62
+-        basesize = test_support.calcobjsize('2P4PlP')
+-        blocksize = struct.calcsize('2P%dP' % BLOCKLEN)
+-        self.assertEqual(object.__sizeof__(deque()), basesize)
+-        check = self.check_sizeof
+-        check(deque(), basesize + blocksize)
+-        check(deque('a'), basesize + blocksize)
+-        check(deque('a' * (BLOCKLEN // 2)), basesize + blocksize)
+-        check(deque('a' * (BLOCKLEN // 2 + 1)), basesize + 2 * blocksize)
+-        check(deque('a' * (42 * BLOCKLEN)), basesize + 43 * blocksize)
+-
+ class TestVariousIteratorArgs(unittest.TestCase):
+ 
+     def test_constructor(self):
+diff -urN a/Lib/test/test_io.py b/Lib/test/test_io.py
+--- a/Lib/test/test_io.py	2012-12-25 13:41:08.487405725 +0100
++++ b/Lib/test/test_io.py	2012-12-25 13:48:30.887405360 +0100
+@@ -748,20 +748,6 @@
+             buf.raw = x
+ 
+ 
+-class SizeofTest:
+-
+-    @support.cpython_only
+-    def test_sizeof(self):
+-        bufsize1 = 4096
+-        bufsize2 = 8192
+-        rawio = self.MockRawIO()
+-        bufio = self.tp(rawio, buffer_size=bufsize1)
+-        size = sys.getsizeof(bufio) - bufsize1
+-        rawio = self.MockRawIO()
+-        bufio = self.tp(rawio, buffer_size=bufsize2)
+-        self.assertEqual(sys.getsizeof(bufio), size + bufsize2)
+-
+-
+ class BufferedReaderTest(unittest.TestCase, CommonBufferedTests):
+     read_mode = "rb"
+ 
+@@ -945,7 +931,7 @@
+                              "failed for {}: {} != 0".format(n, rawio._extraneous_reads))
+ 
+ 
+-class CBufferedReaderTest(BufferedReaderTest, SizeofTest):
++class CBufferedReaderTest(BufferedReaderTest):
+     tp = io.BufferedReader
+ 
+     def test_constructor(self):
+@@ -1208,7 +1194,7 @@
+             self.tp(self.MockRawIO(), 8, 12)
+ 
+ 
+-class CBufferedWriterTest(BufferedWriterTest, SizeofTest):
++class CBufferedWriterTest(BufferedWriterTest):
+     tp = io.BufferedWriter
+ 
+     def test_constructor(self):
+@@ -1596,8 +1582,8 @@
+                 f.flush()
+                 self.assertEqual(raw.getvalue(), b'1b\n2def\n3\n')
+ 
+-class CBufferedRandomTest(CBufferedReaderTest, CBufferedWriterTest,
+-                          BufferedRandomTest, SizeofTest):
++
++class CBufferedRandomTest(CBufferedReaderTest, CBufferedWriterTest, BufferedRandomTest):
+     tp = io.BufferedRandom
+ 
+     def test_constructor(self):
+diff -urN a/Lib/test/test_memoryio.py b/Lib/test/test_memoryio.py
+--- a/Lib/test/test_memoryio.py	2012-12-25 13:41:08.487405725 +0100
++++ b/Lib/test/test_memoryio.py	2012-12-25 13:48:30.891405359 +0100
+@@ -638,17 +638,6 @@
+         memio.close()
+         self.assertRaises(ValueError, memio.__setstate__, (b"closed", 0, None))
+ 
+-    check_sizeof = support.check_sizeof
+-
+-    @support.cpython_only
+-    def test_sizeof(self):
+-        basesize = support.calcobjsize(b'P2PP2P')
+-        check = self.check_sizeof
+-        self.assertEqual(object.__sizeof__(io.BytesIO()), basesize)
+-        check(io.BytesIO(), basesize )
+-        check(io.BytesIO(b'a'), basesize + 1 + 1 )
+-        check(io.BytesIO(b'a' * 1000), basesize + 1000 + 1 )
+-
+ 
+ class CStringIOTest(PyStringIOTest):
+     ioclass = io.StringIO
+diff -urN a/Lib/test/test_parser.py b/Lib/test/test_parser.py
+--- a/Lib/test/test_parser.py	2012-12-25 13:41:08.487405725 +0100
++++ b/Lib/test/test_parser.py	2012-12-25 13:48:19.847405368 +0100
+@@ -1,8 +1,7 @@
+ import parser
+ import unittest
+ import sys
+-import struct
+-from test import test_support as support
++from test import test_support
+ 
+ #
+ #  First, we test that we can generate trees from valid source fragments,
+@@ -584,57 +583,12 @@
+         print >>sys.stderr, "Expecting 's_push: parser stack overflow' in next line"
+         self.assertRaises(MemoryError, parser.expr, e)
+ 
+-class STObjectTestCase(unittest.TestCase):
+-    """Test operations on ST objects themselves"""
+-
+-    check_sizeof = support.check_sizeof
+-
+-    @support.cpython_only
+-    def test_sizeof(self):
+-        def XXXROUNDUP(n):
+-            if n <= 1:
+-                return n
+-            if n <= 128:
+-                return (n + 3) & ~3
+-            return 1 << (n - 1).bit_length()
+-
+-        basesize = support.calcobjsize('Pii')
+-        nodesize = struct.calcsize('hP3iP0h')
+-        def sizeofchildren(node):
+-            if node is None:
+-                return 0
+-            res = 0
+-            hasstr = len(node) > 1 and isinstance(node[-1], str)
+-            if hasstr:
+-                res += len(node[-1]) + 1
+-            children = node[1:-1] if hasstr else node[1:]
+-            if children:
+-                res += XXXROUNDUP(len(children)) * nodesize
+-                for child in children:
+-                    res += sizeofchildren(child)
+-            return res
+-
+-        def check_st_sizeof(st):
+-            self.check_sizeof(st, basesize + nodesize +
+-                                  sizeofchildren(st.totuple()))
+-
+-        check_st_sizeof(parser.expr('2 + 3'))
+-        check_st_sizeof(parser.expr('2 + 3 + 4'))
+-        check_st_sizeof(parser.suite('x = 2 + 3'))
+-        check_st_sizeof(parser.suite(''))
+-        check_st_sizeof(parser.suite('# -*- coding: utf-8 -*-'))
+-        check_st_sizeof(parser.expr('[' + '2,' * 1000 + ']'))
+-
+-
+-    # XXX tests for pickling and unpickling of ST objects should go here
+-
+ def test_main():
+-    support.run_unittest(
++    test_support.run_unittest(
+         RoundtripLegalSyntaxTestCase,
+         IllegalSyntaxTestCase,
+         CompileTestCase,
+         ParserStackLimitTestCase,
+-        STObjectTestCase,
+     )
+ 
+ 
+diff -urN a/Lib/test/test_struct.py b/Lib/test/test_struct.py
+--- a/Lib/test/test_struct.py	2012-12-25 13:41:08.495405725 +0100
++++ b/Lib/test/test_struct.py	2012-12-25 13:48:48.943405345 +0100
+@@ -3,8 +3,7 @@
+ import unittest
+ import struct
+ import inspect
+-from test import test_support as support
+-from test.test_support import (check_warnings, check_py3k_warnings)
++from test.test_support import run_unittest, check_warnings, check_py3k_warnings
+ 
+ import sys
+ ISBIGENDIAN = sys.byteorder == "big"
+@@ -545,29 +544,8 @@
+         hugecount2 = '{}b{}H'.format(sys.maxsize//2, sys.maxsize//2)
+         self.assertRaises(struct.error, struct.calcsize, hugecount2)
+ 
+-    def check_sizeof(self, format_str, number_of_codes):
+-        # The size of 'PyStructObject'
+-        totalsize = support.calcobjsize('5P')
+-        # The size taken up by the 'formatcode' dynamic array
+-        totalsize += struct.calcsize('3P') * (number_of_codes + 1)
+-        support.check_sizeof(self, struct.Struct(format_str), totalsize)
+-
+-    @support.cpython_only
+-    def test__sizeof__(self):
+-        for code in integer_codes:
+-            self.check_sizeof(code, 1)
+-        self.check_sizeof('BHILfdspP', 9)
+-        self.check_sizeof('B' * 1234, 1234)
+-        self.check_sizeof('fd', 2)
+-        self.check_sizeof('xxxxxxxxxxxxxx', 0)
+-        self.check_sizeof('100H', 100)
+-        self.check_sizeof('187s', 1)
+-        self.check_sizeof('20p', 1)
+-        self.check_sizeof('0s', 1)
+-        self.check_sizeof('0c', 0)
+-
+ def test_main():
+-    support.run_unittest(StructTest)
++    run_unittest(StructTest)
+ 
+ if __name__ == '__main__':
+     test_main()
+diff -urN a/Lib/test/test_support.py b/Lib/test/test_support.py
+--- a/Lib/test/test_support.py	2012-12-25 13:41:08.495405725 +0100
++++ b/Lib/test/test_support.py	2012-12-25 13:48:30.891405359 +0100
+@@ -18,8 +18,6 @@
+ import UserDict
+ import re
+ import time
+-import struct
+-import _testcapi
+ try:
+     import thread
+ except ImportError:
+@@ -927,32 +925,6 @@
+     gc.collect()
+ 
+ 
+-_header = '2P'
+-if hasattr(sys, "gettotalrefcount"):
+-    _header = '2P' + _header
+-_vheader = _header + 'P'
+-
+-def calcobjsize(fmt):
+-    return struct.calcsize(_header + fmt + '0P')
+-
+-def calcvobjsize(fmt):
+-    return struct.calcsize(_vheader + fmt + '0P')
+-
+-
+-_TPFLAGS_HAVE_GC = 1<<14
+-_TPFLAGS_HEAPTYPE = 1<<9
+-
+-def check_sizeof(test, o, size):
+-    result = sys.getsizeof(o)
+-    # add GC header size
+-    if ((type(o) == type) and (o.__flags__ & _TPFLAGS_HEAPTYPE) or\
+-        ((type(o) != type) and (type(o).__flags__ & _TPFLAGS_HAVE_GC))):
+-        size += _testcapi.SIZEOF_PYGC_HEAD
+-    msg = 'wrong size for %s: got %d, expected %d' \
+-            % (type(o), result, size)
+-    test.assertEqual(result, size, msg)
+-
+-
+ #=======================================================================
+ # Decorator for running a function in a different locale, correctly resetting
+ # it afterwards.
+diff -urN a/Lib/test/test_sys.py b/Lib/test/test_sys.py
+--- a/Lib/test/test_sys.py	2012-12-25 13:41:08.499405725 +0100
++++ b/Lib/test/test_sys.py	2012-12-25 13:48:30.895405358 +0100
+@@ -490,8 +490,22 @@
+ 
+ class SizeofTest(unittest.TestCase):
+ 
++    TPFLAGS_HAVE_GC = 1<<14
++    TPFLAGS_HEAPTYPE = 1L<<9
++
+     def setUp(self):
+-        self.P = struct.calcsize('P')
++        self.c = len(struct.pack('c', ' '))
++        self.H = len(struct.pack('H', 0))
++        self.i = len(struct.pack('i', 0))
++        self.l = len(struct.pack('l', 0))
++        self.P = len(struct.pack('P', 0))
++        # due to missing size_t information from struct, it is assumed that
++        # sizeof(Py_ssize_t) = sizeof(void*)
++        self.header = 'PP'
++        self.vheader = self.header + 'P'
++        if hasattr(sys, "gettotalrefcount"):
++            self.header += '2P'
++            self.vheader += '2P'
+         self.longdigit = sys.long_info.sizeof_digit
+         import _testcapi
+         self.gc_headsize = _testcapi.SIZEOF_PYGC_HEAD
+@@ -501,109 +515,128 @@
+         self.file.close()
+         test.test_support.unlink(test.test_support.TESTFN)
+ 
+-    check_sizeof = test.test_support.check_sizeof
++    def check_sizeof(self, o, size):
++        result = sys.getsizeof(o)
++        if ((type(o) == type) and (o.__flags__ & self.TPFLAGS_HEAPTYPE) or\
++           ((type(o) != type) and (type(o).__flags__ & self.TPFLAGS_HAVE_GC))):
++            size += self.gc_headsize
++        msg = 'wrong size for %s: got %d, expected %d' \
++                % (type(o), result, size)
++        self.assertEqual(result, size, msg)
++
++    def calcsize(self, fmt):
++        """Wrapper around struct.calcsize which enforces the alignment of the
++        end of a structure to the alignment requirement of pointer.
++
++        Note: This wrapper should only be used if a pointer member is included
++        and no member with a size larger than a pointer exists.
++        """
++        return struct.calcsize(fmt + '0P')
+ 
+     def test_gc_head_size(self):
+         # Check that the gc header size is added to objects tracked by the gc.
+-        size = test.test_support.calcobjsize
++        h = self.header
++        size = self.calcsize
+         gc_header_size = self.gc_headsize
+         # bool objects are not gc tracked
+-        self.assertEqual(sys.getsizeof(True), size('l'))
++        self.assertEqual(sys.getsizeof(True), size(h + 'l'))
+         # but lists are
+-        self.assertEqual(sys.getsizeof([]), size('P PP') + gc_header_size)
++        self.assertEqual(sys.getsizeof([]), size(h + 'P PP') + gc_header_size)
+ 
+     def test_default(self):
+-        size = test.test_support.calcobjsize
+-        self.assertEqual(sys.getsizeof(True, -1), size('l'))
++        h = self.header
++        size = self.calcsize
++        self.assertEqual(sys.getsizeof(True, -1), size(h + 'l'))
+ 
+     def test_objecttypes(self):
+         # check all types defined in Objects/
+-        size = test.test_support.calcobjsize
+-        vsize = test.test_support.calcvobjsize
++        h = self.header
++        vh = self.vheader
++        size = self.calcsize
+         check = self.check_sizeof
+         # bool
+-        check(True, size('l'))
++        check(True, size(h + 'l'))
+         # buffer
+         with test.test_support.check_py3k_warnings():
+-            check(buffer(''), size('2P2Pil'))
++            check(buffer(''), size(h + '2P2Pil'))
+         # builtin_function_or_method
+-        check(len, size('3P'))
++        check(len, size(h + '3P'))
+         # bytearray
+         samples = ['', 'u'*100000]
+         for sample in samples:
+             x = bytearray(sample)
+-            check(x, vsize('iPP') + x.__alloc__())
++            check(x, size(vh + 'iPP') + x.__alloc__() * self.c)
+         # bytearray_iterator
+-        check(iter(bytearray()), size('PP'))
++        check(iter(bytearray()), size(h + 'PP'))
+         # cell
+         def get_cell():
+             x = 42
+             def inner():
+                 return x
+             return inner
+-        check(get_cell().func_closure[0], size('P'))
++        check(get_cell().func_closure[0], size(h + 'P'))
+         # classobj (old-style class)
+         class class_oldstyle():
+             def method():
+                 pass
+-        check(class_oldstyle, size('7P'))
++        check(class_oldstyle, size(h + '7P'))
+         # instance (old-style class)
+-        check(class_oldstyle(), size('3P'))
++        check(class_oldstyle(), size(h + '3P'))
+         # instancemethod (old-style class)
+-        check(class_oldstyle().method, size('4P'))
++        check(class_oldstyle().method, size(h + '4P'))
+         # complex
+-        check(complex(0,1), size('2d'))
++        check(complex(0,1), size(h + '2d'))
+         # code
+-        check(get_cell().func_code, size('4i8Pi3P'))
++        check(get_cell().func_code, size(h + '4i8Pi3P'))
+         # BaseException
+-        check(BaseException(), size('3P'))
++        check(BaseException(), size(h + '3P'))
+         # UnicodeEncodeError
+-        check(UnicodeEncodeError("", u"", 0, 0, ""), size('5P2PP'))
++        check(UnicodeEncodeError("", u"", 0, 0, ""), size(h + '5P2PP'))
+         # UnicodeDecodeError
+-        check(UnicodeDecodeError("", "", 0, 0, ""), size('5P2PP'))
++        check(UnicodeDecodeError("", "", 0, 0, ""), size(h + '5P2PP'))
+         # UnicodeTranslateError
+-        check(UnicodeTranslateError(u"", 0, 1, ""), size('5P2PP'))
++        check(UnicodeTranslateError(u"", 0, 1, ""), size(h + '5P2PP'))
+         # method_descriptor (descriptor object)
+-        check(str.lower, size('2PP'))
++        check(str.lower, size(h + '2PP'))
+         # classmethod_descriptor (descriptor object)
+         # XXX
+         # member_descriptor (descriptor object)
+         import datetime
+-        check(datetime.timedelta.days, size('2PP'))
++        check(datetime.timedelta.days, size(h + '2PP'))
+         # getset_descriptor (descriptor object)
+         import __builtin__
+-        check(__builtin__.file.closed, size('2PP'))
++        check(__builtin__.file.closed, size(h + '2PP'))
+         # wrapper_descriptor (descriptor object)
+-        check(int.__add__, size('2P2P'))
++        check(int.__add__, size(h + '2P2P'))
+         # dictproxy
+         class C(object): pass
+-        check(C.__dict__, size('P'))
++        check(C.__dict__, size(h + 'P'))
+         # method-wrapper (descriptor object)
+-        check({}.__iter__, size('2P'))
++        check({}.__iter__, size(h + '2P'))
+         # dict
+-        check({}, size('3P2P' + 8*'P2P'))
++        check({}, size(h + '3P2P' + 8*'P2P'))
+         x = {1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8}
+-        check(x, size('3P2P' + 8*'P2P') + 16*struct.calcsize('P2P'))
++        check(x, size(h + '3P2P' + 8*'P2P') + 16*size('P2P'))
+         # dictionary-keyiterator
+-        check({}.iterkeys(), size('P2PPP'))
++        check({}.iterkeys(), size(h + 'P2PPP'))
+         # dictionary-valueiterator
+-        check({}.itervalues(), size('P2PPP'))
++        check({}.itervalues(), size(h + 'P2PPP'))
+         # dictionary-itemiterator
+-        check({}.iteritems(), size('P2PPP'))
++        check({}.iteritems(), size(h + 'P2PPP'))
+         # ellipses
+-        check(Ellipsis, size(''))
++        check(Ellipsis, size(h + ''))
+         # EncodingMap
+         import codecs, encodings.iso8859_3
+         x = codecs.charmap_build(encodings.iso8859_3.decoding_table)
+-        check(x, size('32B2iB'))
++        check(x, size(h + '32B2iB'))
+         # enumerate
+-        check(enumerate([]), size('l3P'))
++        check(enumerate([]), size(h + 'l3P'))
+         # file
+-        check(self.file, size('4P2i4P3i3P3i'))
++        check(self.file, size(h + '4P2i4P3i3P3i'))
+         # float
+-        check(float(0), size('d'))
++        check(float(0), size(h + 'd'))
+         # sys.floatinfo
+-        check(sys.float_info, vsize('') + self.P * len(sys.float_info))
++        check(sys.float_info, size(vh) + self.P * len(sys.float_info))
+         # frame
+         import inspect
+         CO_MAXBLOCKS = 20
+@@ -612,10 +645,10 @@
+         nfrees = len(x.f_code.co_freevars)
+         extras = x.f_code.co_stacksize + x.f_code.co_nlocals +\
+                  ncells + nfrees - 1
+-        check(x, vsize('12P3i' + CO_MAXBLOCKS*'3i' + 'P' + extras*'P'))
++        check(x, size(vh + '12P3i' + CO_MAXBLOCKS*'3i' + 'P' + extras*'P'))
+         # function
+         def func(): pass
+-        check(func, size('9P'))
++        check(func, size(h + '9P'))
+         class c():
+             @staticmethod
+             def foo():
+@@ -624,65 +657,65 @@
+             def bar(cls):
+                 pass
+             # staticmethod
+-            check(foo, size('P'))
++            check(foo, size(h + 'P'))
+             # classmethod
+-            check(bar, size('P'))
++            check(bar, size(h + 'P'))
+         # generator
+         def get_gen(): yield 1
+-        check(get_gen(), size('Pi2P'))
++        check(get_gen(), size(h + 'Pi2P'))
+         # integer
+-        check(1, size('l'))
+-        check(100, size('l'))
++        check(1, size(h + 'l'))
++        check(100, size(h + 'l'))
+         # iterator
+-        check(iter('abc'), size('lP'))
++        check(iter('abc'), size(h + 'lP'))
+         # callable-iterator
+         import re
+-        check(re.finditer('',''), size('2P'))
++        check(re.finditer('',''), size(h + '2P'))
+         # list
+         samples = [[], [1,2,3], ['1', '2', '3']]
+         for sample in samples:
+-            check(sample, vsize('PP') + len(sample)*self.P)
++            check(sample, size(vh + 'PP') + len(sample)*self.P)
+         # sortwrapper (list)
+         # XXX
+         # cmpwrapper (list)
+         # XXX
+         # listiterator (list)
+-        check(iter([]), size('lP'))
++        check(iter([]), size(h + 'lP'))
+         # listreverseiterator (list)
+-        check(reversed([]), size('lP'))
++        check(reversed([]), size(h + 'lP'))
+         # long
+-        check(0L, vsize(''))
+-        check(1L, vsize('') + self.longdigit)
+-        check(-1L, vsize('') + self.longdigit)
++        check(0L, size(vh))
++        check(1L, size(vh) + self.longdigit)
++        check(-1L, size(vh) + self.longdigit)
+         PyLong_BASE = 2**sys.long_info.bits_per_digit
+-        check(long(PyLong_BASE), vsize('') + 2*self.longdigit)
+-        check(long(PyLong_BASE**2-1), vsize('') + 2*self.longdigit)
+-        check(long(PyLong_BASE**2), vsize('') + 3*self.longdigit)
++        check(long(PyLong_BASE), size(vh) + 2*self.longdigit)
++        check(long(PyLong_BASE**2-1), size(vh) + 2*self.longdigit)
++        check(long(PyLong_BASE**2), size(vh) + 3*self.longdigit)
+         # module
+-        check(unittest, size('P'))
++        check(unittest, size(h + 'P'))
+         # None
+-        check(None, size(''))
++        check(None, size(h + ''))
+         # object
+-        check(object(), size(''))
++        check(object(), size(h + ''))
+         # property (descriptor object)
+         class C(object):
+             def getx(self): return self.__x
+             def setx(self, value): self.__x = value
+             def delx(self): del self.__x
+             x = property(getx, setx, delx, "")
+-            check(x, size('4Pi'))
++            check(x, size(h + '4Pi'))
+         # PyCObject
+         # PyCapsule
+         # XXX
+         # rangeiterator
+-        check(iter(xrange(1)), size('4l'))
++        check(iter(xrange(1)), size(h + '4l'))
+         # reverse
+-        check(reversed(''), size('PP'))
++        check(reversed(''), size(h + 'PP'))
+         # set
+         # frozenset
+         PySet_MINSIZE = 8
+         samples = [[], range(10), range(50)]
+-        s = size('3P2P' + PySet_MINSIZE*'lP' + 'lP')
++        s = size(h + '3P2P' + PySet_MINSIZE*'lP' + 'lP')
+         for sample in samples:
+             minused = len(sample)
+             if minused == 0: tmp = 1
+@@ -699,24 +732,23 @@
+                 check(set(sample), s + newsize*struct.calcsize('lP'))
+                 check(frozenset(sample), s + newsize*struct.calcsize('lP'))
+         # setiterator
+-        check(iter(set()), size('P3P'))
++        check(iter(set()), size(h + 'P3P'))
+         # slice
+-        check(slice(1), size('3P'))
++        check(slice(1), size(h + '3P'))
+         # str
+-        vh = test.test_support._vheader
+-        check('', struct.calcsize(vh + 'lic'))
+-        check('abc', struct.calcsize(vh + 'lic') + 3)
++        check('', struct.calcsize(vh + 'li') + 1)
++        check('abc', struct.calcsize(vh + 'li') + 1 + 3*self.c)
+         # super
+-        check(super(int), size('3P'))
++        check(super(int), size(h + '3P'))
+         # tuple
+-        check((), vsize(''))
+-        check((1,2,3), vsize('') + 3*self.P)
++        check((), size(vh))
++        check((1,2,3), size(vh) + 3*self.P)
+         # tupleiterator
+-        check(iter(()), size('lP'))
++        check(iter(()), size(h + 'lP'))
+         # type
+         # (PyTypeObject + PyNumberMethods +  PyMappingMethods +
+         #  PySequenceMethods + PyBufferProcs)
+-        s = vsize('P2P15Pl4PP9PP11PI') + struct.calcsize('41P 10P 3P 6P')
++        s = size(vh + 'P2P15Pl4PP9PP11PI') + size('41P 10P 3P 6P')
+         class newstyleclass(object):
+             pass
+         check(newstyleclass, s)
+@@ -731,40 +763,41 @@
+         # we need to test for both sizes, because we don't know if the string
+         # has been cached
+         for s in samples:
+-            check(s, size('PPlP') + usize * (len(s) + 1))
++            check(s, size(h + 'PPlP') + usize * (len(s) + 1))
+         # weakref
+         import weakref
+-        check(weakref.ref(int), size('2Pl2P'))
++        check(weakref.ref(int), size(h + '2Pl2P'))
+         # weakproxy
+         # XXX
+         # weakcallableproxy
+-        check(weakref.proxy(int), size('2Pl2P'))
++        check(weakref.proxy(int), size(h + '2Pl2P'))
+         # xrange
+-        check(xrange(1), size('3l'))
+-        check(xrange(66000), size('3l'))
++        check(xrange(1), size(h + '3l'))
++        check(xrange(66000), size(h + '3l'))
+ 
+     def test_pythontypes(self):
+         # check all types defined in Python/
+-        size = test.test_support.calcobjsize
+-        vsize = test.test_support.calcvobjsize
++        h = self.header
++        vh = self.vheader
++        size = self.calcsize
+         check = self.check_sizeof
+         # _ast.AST
+         import _ast
+-        check(_ast.AST(), size(''))
++        check(_ast.AST(), size(h + ''))
+         # imp.NullImporter
+         import imp
+-        check(imp.NullImporter(self.file.name), size(''))
++        check(imp.NullImporter(self.file.name), size(h + ''))
+         try:
+             raise TypeError
+         except TypeError:
+             tb = sys.exc_info()[2]
+             # traceback
+             if tb != None:
+-                check(tb, size('2P2i'))
++                check(tb, size(h + '2P2i'))
+         # symtable entry
+         # XXX
+         # sys.flags
+-        check(sys.flags, vsize('') + self.P * len(sys.flags))
++        check(sys.flags, size(vh) + self.P * len(sys.flags))
+ 
+ 
+ def test_main():
+diff -urN a/Misc/ACKS b/Misc/ACKS
+--- a/Misc/ACKS	2012-12-25 13:41:08.507405725 +0100
++++ b/Misc/ACKS	2012-12-25 13:48:09.675405378 +0100
+@@ -394,7 +394,6 @@
+ Greg Humphreys
+ Eric Huss
+ Jeremy Hylton
+-Ludwig Hähne
+ Gerhard Häring
+ Fredrik Håård
+ Catalin Iacob
+diff -urN a/Misc/NEWS b/Misc/NEWS
+--- a/Misc/NEWS	2012-12-25 13:41:08.511405725 +0100
++++ b/Misc/NEWS	2012-12-25 13:48:48.947405345 +0100
+@@ -100,9 +100,6 @@
+ 
+ - Issue #15567: Fix NameError when running threading._test
+ 
+-- Issue #15424: Add a __sizeof__ implementation for array objects.
+-  Patch by Ludwig Hähne.
+-
+ - Issue #13052: Fix IDLE crashing when replace string in Search/Replace dialog
+   ended with '\'. Patch by Roger Serwy.
+ 
+@@ -115,22 +112,6 @@
+ - Issue #12288: Consider '0' and '0.0' as valid initialvalue
+   for tkinter SimpleDialog.
+ 
+-- Issue #15489: Add a __sizeof__ implementation for BytesIO objects.
+-  Patch by Serhiy Storchaka.
+-
+-- Issue #15469: Add a __sizeof__ implementation for deque objects.
+-  Patch by Serhiy Storchaka.
+-
+-- Issue #15487: Add a __sizeof__ implementation for buffered I/O objects.
+-  Patch by Serhiy Storchaka.
+-
+-- Issue #15512: Add a __sizeof__ implementation for parser.
+-  Patch by Serhiy Storchaka.
+-
+-- Issue #15402: An issue in the struct module that caused sys.getsizeof to
+-  return incorrect results for struct.Struct instances has been fixed.
+-  Initial patch by Serhiy Storchaka.
+-
+ - Issue #15232: when mangle_from is True, email.Generator now correctly mangles
+   lines that start with 'From ' that occur in a MIME preamble or epilog.
+ 
+@@ -934,9 +915,6 @@
+ Tests
+ -----
+ 
+-- Issue #15467: Move helpers for __sizeof__ tests into test_support.
+-  Patch by Serhiy Storchaka.
+-
+ - Issue #11689: Fix a variable scoping error in an sqlite3 test.
+   Initial patch by Torsten Landschoff.
+ 
+diff -urN a/Modules/arraymodule.c b/Modules/arraymodule.c
+--- a/Modules/arraymodule.c	2012-12-25 13:41:08.519405725 +0100
++++ b/Modules/arraymodule.c	2012-12-25 13:48:09.683405376 +0100
+@@ -1533,19 +1533,6 @@
+ PyDoc_STRVAR(reduce_doc, "Return state information for pickling.");
+ 
+ static PyObject *
+-array_sizeof(arrayobject *self, PyObject *unused)
+-{
+-    Py_ssize_t res;
+-    res = sizeof(arrayobject) + self->allocated * self->ob_descr->itemsize;
+-    return PyLong_FromSsize_t(res);
+-}
+-
+-PyDoc_STRVAR(sizeof_doc,
+-"__sizeof__() -> int\n\
+-\n\
+-Size of the array in memory, in bytes.");
+-
+-static PyObject *
+ array_get_typecode(arrayobject *a, void *closure)
+ {
+     char tc = a->ob_descr->typecode;
+@@ -1619,8 +1606,6 @@
+ #endif
+     {"write",           (PyCFunction)array_tofile_as_write,     METH_O,
+      tofile_doc},
+-    {"__sizeof__",      (PyCFunction)array_sizeof,      METH_NOARGS,
+-     sizeof_doc},
+     {NULL,              NULL}           /* sentinel */
+ };
+ 
+diff -urN a/Modules/_collectionsmodule.c b/Modules/_collectionsmodule.c
+--- a/Modules/_collectionsmodule.c	2012-12-25 13:41:08.511405725 +0100
++++ b/Modules/_collectionsmodule.c	2012-12-25 13:48:19.855405367 +0100
+@@ -991,23 +991,6 @@
+ }
+ 
+ static PyObject *
+-deque_sizeof(dequeobject *deque, void *unused)
+-{
+-    Py_ssize_t res;
+-    Py_ssize_t blocks;
+-
+-    res = sizeof(dequeobject);
+-    blocks = (deque->leftindex + deque->len + BLOCKLEN - 1) / BLOCKLEN;
+-    assert(deque->leftindex + deque->len - 1 ==
+-           (blocks - 1) * BLOCKLEN + deque->rightindex);
+-    res += blocks * sizeof(block);
+-    return PyLong_FromSsize_t(res);
+-}
+-
+-PyDoc_STRVAR(sizeof_doc,
+-"D.__sizeof__() -- size of D in memory, in bytes");
+-
+-static PyObject *
+ deque_get_maxlen(dequeobject *deque)
+ {
+     if (deque->maxlen == -1)
+@@ -1070,9 +1053,7 @@
+     {"reverse",                 (PyCFunction)deque_reverse,
+         METH_NOARGS,             reverse_doc},
+     {"rotate",                  (PyCFunction)deque_rotate,
+-        METH_VARARGS,            rotate_doc},
+-    {"__sizeof__",              (PyCFunction)deque_sizeof,
+-        METH_NOARGS,             sizeof_doc},
++        METH_VARARGS,           rotate_doc},
+     {NULL,              NULL}   /* sentinel */
+ };
+ 
+diff -urN a/Modules/_io/bufferedio.c b/Modules/_io/bufferedio.c
+--- a/Modules/_io/bufferedio.c	2012-12-25 13:41:08.515405725 +0100
++++ b/Modules/_io/bufferedio.c	2012-12-25 13:48:30.903405359 +0100
+@@ -386,17 +386,6 @@
+     Py_TYPE(self)->tp_free((PyObject *)self);
+ }
+ 
+-static PyObject *
+-buffered_sizeof(buffered *self, void *unused)
+-{
+-    Py_ssize_t res;
+-
+-    res = sizeof(buffered);
+-    if (self->buffer)
+-        res += self->buffer_size;
+-    return PyLong_FromSsize_t(res);
+-}
+-
+ static int
+ buffered_traverse(buffered *self, visitproc visit, void *arg)
+ {
+@@ -1571,7 +1560,6 @@
+     {"seek", (PyCFunction)buffered_seek, METH_VARARGS},
+     {"tell", (PyCFunction)buffered_tell, METH_NOARGS},
+     {"truncate", (PyCFunction)buffered_truncate, METH_VARARGS},
+-    {"__sizeof__", (PyCFunction)buffered_sizeof, METH_NOARGS},
+     {NULL, NULL}
+ };
+ 
+@@ -1964,7 +1952,6 @@
+     {"flush", (PyCFunction)buffered_flush, METH_NOARGS},
+     {"seek", (PyCFunction)buffered_seek, METH_VARARGS},
+     {"tell", (PyCFunction)buffered_tell, METH_NOARGS},
+-    {"__sizeof__", (PyCFunction)buffered_sizeof, METH_NOARGS},
+     {NULL, NULL}
+ };
+ 
+@@ -2360,7 +2347,6 @@
+     {"readline", (PyCFunction)buffered_readline, METH_VARARGS},
+     {"peek", (PyCFunction)buffered_peek, METH_VARARGS},
+     {"write", (PyCFunction)bufferedwriter_write, METH_VARARGS},
+-    {"__sizeof__", (PyCFunction)buffered_sizeof, METH_NOARGS},
+     {NULL, NULL}
+ };
+ 
+diff -urN a/Modules/_io/bytesio.c b/Modules/_io/bytesio.c
+--- a/Modules/_io/bytesio.c	2012-12-25 13:41:08.515405725 +0100
++++ b/Modules/_io/bytesio.c	2012-12-25 13:48:30.903405359 +0100
+@@ -794,17 +794,6 @@
+     return 0;
+ }
+ 
+-static PyObject *
+-bytesio_sizeof(bytesio *self, void *unused)
+-{
+-    Py_ssize_t res;
+-
+-    res = sizeof(bytesio);
+-    if (self->buf)
+-        res += self->buf_size;
+-    return PyLong_FromSsize_t(res);
+-}
+-
+ static int
+ bytesio_traverse(bytesio *self, visitproc visit, void *arg)
+ {
+@@ -846,7 +835,6 @@
+     {"truncate",   (PyCFunction)bytesio_truncate,   METH_VARARGS, truncate_doc},
+     {"__getstate__",  (PyCFunction)bytesio_getstate,  METH_NOARGS, NULL},
+     {"__setstate__",  (PyCFunction)bytesio_setstate,  METH_O, NULL},
+-    {"__sizeof__", (PyCFunction)bytesio_sizeof,     METH_NOARGS, NULL},
+     {NULL, NULL}        /* sentinel */
+ };
+ 
+diff -urN a/Modules/parsermodule.c b/Modules/parsermodule.c
+--- a/Modules/parsermodule.c	2012-12-25 13:41:08.523405725 +0100
++++ b/Modules/parsermodule.c	2012-12-25 13:48:19.859405367 +0100
+@@ -169,33 +169,9 @@
+ 
+ 
+ static void parser_free(PyST_Object *st);
+-static PyObject* parser_sizeof(PyST_Object *, void *);
+ static int parser_compare(PyST_Object *left, PyST_Object *right);
+ static PyObject *parser_getattr(PyObject *self, char *name);
+-static PyObject* parser_compilest(PyST_Object *, PyObject *, PyObject *);
+-static PyObject* parser_isexpr(PyST_Object *, PyObject *, PyObject *);
+-static PyObject* parser_issuite(PyST_Object *, PyObject *, PyObject *);
+-static PyObject* parser_st2list(PyST_Object *, PyObject *, PyObject *);
+-static PyObject* parser_st2tuple(PyST_Object *, PyObject *, PyObject *);
+ 
+-#define PUBLIC_METHOD_TYPE (METH_VARARGS|METH_KEYWORDS)
+-
+-static PyMethodDef
+-parser_methods[] = {
+-    {"compile",         (PyCFunction)parser_compilest,  PUBLIC_METHOD_TYPE,
+-        PyDoc_STR("Compile this ST object into a code object.")},
+-    {"isexpr",          (PyCFunction)parser_isexpr,     PUBLIC_METHOD_TYPE,
+-        PyDoc_STR("Determines if this ST object was created from an expression.")},
+-    {"issuite",         (PyCFunction)parser_issuite,    PUBLIC_METHOD_TYPE,
+-        PyDoc_STR("Determines if this ST object was created from a suite.")},
+-    {"tolist",          (PyCFunction)parser_st2list,    PUBLIC_METHOD_TYPE,
+-        PyDoc_STR("Creates a list-tree representation of this ST.")},
+-    {"totuple",         (PyCFunction)parser_st2tuple,   PUBLIC_METHOD_TYPE,
+-        PyDoc_STR("Creates a tuple-tree representation of this ST.")},
+-    {"__sizeof__",      (PyCFunction)parser_sizeof,     METH_NOARGS,
+-        PyDoc_STR("Returns size in memory, in bytes.")},
+-    {NULL, NULL, 0, NULL}
+-};
+ 
+ static
+ PyTypeObject PyST_Type = {
+@@ -224,14 +200,7 @@
+     Py_TPFLAGS_DEFAULT,                 /* tp_flags             */
+ 
+     /* __doc__ */
+-    "Intermediate representation of a Python parse tree.",
+-    0,                                  /* tp_traverse */
+-    0,                                  /* tp_clear */
+-    0,                                  /* tp_richcompare */
+-    0,                                  /* tp_weaklistoffset */
+-    0,                                  /* tp_iter */
+-    0,                                  /* tp_iternext */
+-    parser_methods,                     /* tp_methods */
++    "Intermediate representation of a Python parse tree."
+ };  /* PyST_Type */
+ 
+ 
+@@ -525,6 +494,25 @@
+ }
+ 
+ 
++#define PUBLIC_METHOD_TYPE (METH_VARARGS|METH_KEYWORDS)
++
++static PyMethodDef
++parser_methods[] = {
++    {"compile",         (PyCFunction)parser_compilest,  PUBLIC_METHOD_TYPE,
++        PyDoc_STR("Compile this ST object into a code object.")},
++    {"isexpr",          (PyCFunction)parser_isexpr,     PUBLIC_METHOD_TYPE,
++        PyDoc_STR("Determines if this ST object was created from an expression.")},
++    {"issuite",         (PyCFunction)parser_issuite,    PUBLIC_METHOD_TYPE,
++        PyDoc_STR("Determines if this ST object was created from a suite.")},
++    {"tolist",          (PyCFunction)parser_st2list,    PUBLIC_METHOD_TYPE,
++        PyDoc_STR("Creates a list-tree representation of this ST.")},
++    {"totuple",         (PyCFunction)parser_st2tuple,   PUBLIC_METHOD_TYPE,
++        PyDoc_STR("Creates a tuple-tree representation of this ST.")},
++
++    {NULL, NULL, 0, NULL}
++};
++
++
+ static PyObject*
+ parser_getattr(PyObject *self, char *name)
+ {
+@@ -707,15 +695,6 @@
+     return parser_tuple2st(self, args, kw);
+ }
+ 
+-static PyObject *
+-parser_sizeof(PyST_Object *st, void *unused)
+-{
+-    Py_ssize_t res;
+-
+-    res = sizeof(PyST_Object) + _PyNode_SizeOf(st->st_node);
+-    return PyLong_FromSsize_t(res);
+-}
+-
+ 
+ /*  node* build_node_children()
+  *
+diff -urN a/Modules/_struct.c b/Modules/_struct.c
+--- a/Modules/_struct.c	2012-12-25 13:41:08.519405725 +0100
++++ b/Modules/_struct.c	2012-12-25 13:48:48.951405344 +0100
+@@ -1693,18 +1693,6 @@
+     return PyInt_FromSsize_t(self->s_size);
+ }
+ 
+-PyDoc_STRVAR(s_sizeof__doc__,
+-"S.__sizeof__() -> size of S in memory, in bytes");
+-
+-static PyObject *
+-s_sizeof(PyStructObject *self, void *unused)
+-{
+-    Py_ssize_t size;
+-
+-    size = sizeof(PyStructObject) + sizeof(formatcode) * (self->s_len + 1);
+-    return PyLong_FromSsize_t(size);
+-}
+-
+ /* List of functions */
+ 
+ static struct PyMethodDef s_methods[] = {
+@@ -1713,7 +1701,6 @@
+     {"unpack",          s_unpack,       METH_O, s_unpack__doc__},
+     {"unpack_from",     (PyCFunction)s_unpack_from, METH_VARARGS|METH_KEYWORDS,
+                     s_unpack_from__doc__},
+-    {"__sizeof__",      (PyCFunction)s_sizeof, METH_NOARGS, s_sizeof__doc__},
+     {NULL,       NULL}          /* sentinel */
+ };
+ 
+diff -urN a/Parser/node.c b/Parser/node.c
+--- a/Parser/node.c	2012-12-25 13:41:08.551405725 +0100
++++ b/Parser/node.c	2012-12-25 13:48:19.859405367 +0100
+@@ -114,7 +114,6 @@
+ 
+ /* Forward */
+ static void freechildren(node *);
+-static Py_ssize_t sizeofchildren(node *n);
+ 
+ 
+ void
+@@ -126,16 +125,6 @@
+     }
+ }
+ 
+-Py_ssize_t
+-_PyNode_SizeOf(node *n)
+-{
+-    Py_ssize_t res = 0;
+-
+-    if (n != NULL)
+-        res = sizeof(node) + sizeofchildren(n);
+-    return res;
+-}
+-
+ static void
+ freechildren(node *n)
+ {
+@@ -147,18 +136,3 @@
+     if (STR(n) != NULL)
+         PyObject_FREE(STR(n));
+ }
+-
+-static Py_ssize_t
+-sizeofchildren(node *n)
+-{
+-    Py_ssize_t res = 0;
+-    int i;
+-    for (i = NCH(n); --i >= 0; )
+-        res += sizeofchildren(CHILD(n, i));
+-    if (n->n_child != NULL)
+-        /* allocated size of n->n_child array */
+-        res += XXXROUNDUP(NCH(n)) * sizeof(node);
+-    if (STR(n) != NULL)
+-        res += strlen(STR(n)) + 1;
+-    return res;
+-}

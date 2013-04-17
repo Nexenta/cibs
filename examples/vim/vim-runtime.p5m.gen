@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -e
+set -u
+
+pkg=vim-runtime
+
+tmp=/tmp/cibs-$pkg.$$
+
+proto=${proto:-work/proto/$pkg}
+
+cat <<'META' > $tmp
+set name=pkg.fmri value=pkg:/editor/vim-runtime@$(ips-version)
+set name=pkg.summary value="Vi IMproved - Runtime files"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+META
+
+/usr/share/cibs/scripts/make-payload $proto >> $tmp
+cat $tmp
+rm $tmp
+

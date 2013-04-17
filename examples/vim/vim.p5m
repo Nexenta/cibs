@@ -1,0 +1,17 @@
+set name=pkg.fmri value=pkg:/editor/vim@$(ips-version)
+set name=pkg.summary value="Vi IMproved - enhanced vi editor"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+depend fmri=editor/vim-runtime@$(ips-version) type=require
+depend fmri=editor/vim-runtime@$(ips-version) type=incorporate
+
+depend fmri=editor/vim-common@$(ips-version) type=require
+depend fmri=editor/vim-common@$(ips-version) type=incorporate
+
+file work/source/src/vim-basic/vim path=usr/bin/vim.basic
+
+link path=usr/bin/vim target=vim.basic \
+    mediator=vim mediator-implementation=vim-basic

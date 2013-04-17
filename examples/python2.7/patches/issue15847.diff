@@ -1,0 +1,47 @@
+# DP: Fix issue #15847: allow args to be a tuple in parse_args.
+
+diff -r edbf37ace03c -r a2147bbf7868 Lib/argparse.py
+--- a/Lib/argparse.py	Fri Sep 07 23:49:07 2012 +0200
++++ b/Lib/argparse.py	Sat Sep 08 12:15:25 2012 -0400
+@@ -1692,9 +1692,12 @@
+         return args
+ 
+     def parse_known_args(self, args=None, namespace=None):
+-        # args default to the system args
+         if args is None:
++            # args default to the system args
+             args = _sys.argv[1:]
++        else:
++            # make sure that args are mutable
++            args = list(args)
+ 
+         # default Namespace built from parser defaults
+         if namespace is None:
+diff -r edbf37ace03c -r a2147bbf7868 Lib/test/test_argparse.py
+--- a/Lib/test/test_argparse.py	Fri Sep 07 23:49:07 2012 +0200
++++ b/Lib/test/test_argparse.py	Sat Sep 08 12:15:25 2012 -0400
+@@ -4486,6 +4486,24 @@
+ 
+ class TestParseKnownArgs(TestCase):
+ 
++    def test_arguments_tuple(self):
++        parser = argparse.ArgumentParser()
++        parser.parse_args(())
++
++    def test_arguments_list(self):
++        parser = argparse.ArgumentParser()
++        parser.parse_args([])
++
++    def test_arguments_tuple_positional(self):
++        parser = argparse.ArgumentParser()
++        parser.add_argument('x')
++        parser.parse_args(('x',))
++
++    def test_arguments_list_positional(self):
++        parser = argparse.ArgumentParser()
++        parser.add_argument('x')
++        parser.parse_args(['x'])
++
+     def test_optionals(self):
+         parser = argparse.ArgumentParser()
+         parser.add_argument('--foo')

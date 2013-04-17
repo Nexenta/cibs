@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -e
+set -u
+
+tmp=/tmp/cibs-dev-python.$$
+
+proto=${proto:-work/proto/dev-python}
+
+cat <<'META' > $tmp
+set name=pkg.fmri value=pkg:/developer/python$(pyver)@$(ips-version)
+set name=pkg.summary value="Header files and a static library for Python (version $(pyver))"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+depend fmri=pkg:/library/openssl type=require
+depend fmri=pkg:/library/libexpat type=require
+
+depend fmri=pkg:/library/libpython$(pyver)@$(ips-version) type=require
+depend fmri=pkg:/library/libpython$(pyver)@$(ips-version) type=incorporate
+
+depend fmri=pkg:/runtime/python$(pyver)@$(ips-version) type=require
+depend fmri=pkg:/runtime/python$(pyver)@$(ips-version) type=incorporate
+
+<transform file path=.*\.py -> add pkg.depend.bypass-generate .*>
+<transform file path=usr/bin/python.*-config -> add pkg.depend.bypass-generate .*>
+
+META
+
+/usr/share/cibs/scripts/make-payload $proto >> $tmp
+cat $tmp
+rm $tmp
+

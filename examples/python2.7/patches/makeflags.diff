@@ -1,0 +1,24 @@
+Index: b/Makefile.pre.in
+===================================================================
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -406,11 +406,15 @@
+ 
+ 
+ # Build the shared modules
++# MAKEFLAGS are sorted and normalized. Under GNU make the 's' for
++# -s, --silent or --quiet is always the first char.
+ sharedmods: $(BUILDPYTHON)
+-	@case $$MAKEFLAGS in \
+-	*s*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py -q build;; \
+-	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
+-	esac
++	@case "$$MAKEFLAGS" in \
++	    s*) quiet="-q";; \
++	    *) quiet="";; \
++	esac; \
++	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
++		./$(BUILDPYTHON) -E $(srcdir)/setup.py $$quiet build
+ 
+ # Build static library
+ # avoid long command lines, same as LIBRARY_OBJS

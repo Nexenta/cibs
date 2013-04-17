@@ -1,0 +1,16 @@
+# DP: - Issue #15340: Fix importing the random module when /dev/urandom cannot
+# DP:   be opened.  This was a regression caused by the hash randomization patch.
+
+diff -r 8cd6acffbcb9 -r edbf37ace03c Python/random.c
+--- a/Python/random.c	Fri Sep 07 00:55:33 2012 +0200
++++ b/Python/random.c	Fri Sep 07 23:49:07 2012 +0200
+@@ -165,7 +165,8 @@
+     Py_END_ALLOW_THREADS
+     if (fd < 0)
+     {
+-        PyErr_SetFromErrnoWithFilename(PyExc_OSError, "/dev/urandom");
++        PyErr_SetString(PyExc_NotImplementedError,
++                        "/dev/urandom (or equivalent) not found");
+         return -1;
+     }
+ 

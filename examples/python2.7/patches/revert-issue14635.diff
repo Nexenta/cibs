@@ -1,0 +1,294 @@
+diff -urN a/Lib/telnetlib.py b/Lib/telnetlib.py
+--- a/Lib/telnetlib.py	2012-12-25 13:41:08.467405725 +0100
++++ b/Lib/telnetlib.py	2012-12-25 14:00:31.339404759 +0100
+@@ -34,7 +34,6 @@
+ 
+ 
+ # Imported modules
+-import errno
+ import sys
+ import socket
+ import select
+@@ -206,7 +205,6 @@
+         self.sb = 0 # flag for SB and SE sequence.
+         self.sbdataq = ''
+         self.option_callback = None
+-        self._has_poll = hasattr(select, 'poll')
+         if host is not None:
+             self.open(host, port, timeout)
+ 
+@@ -289,61 +287,6 @@
+         is closed and no cooked data is available.
+ 
+         """
+-        if self._has_poll:
+-            return self._read_until_with_poll(match, timeout)
+-        else:
+-            return self._read_until_with_select(match, timeout)
+-
+-    def _read_until_with_poll(self, match, timeout):
+-        """Read until a given string is encountered or until timeout.
+-
+-        This method uses select.poll() to implement the timeout.
+-        """
+-        n = len(match)
+-        call_timeout = timeout
+-        if timeout is not None:
+-            from time import time
+-            time_start = time()
+-        self.process_rawq()
+-        i = self.cookedq.find(match)
+-        if i < 0:
+-            poller = select.poll()
+-            poll_in_or_priority_flags = select.POLLIN | select.POLLPRI
+-            poller.register(self, poll_in_or_priority_flags)
+-            while i < 0 and not self.eof:
+-                try:
+-                    ready = poller.poll(call_timeout)
+-                except select.error as e:
+-                    if e.errno == errno.EINTR:
+-                        if timeout is not None:
+-                            elapsed = time() - time_start
+-                            call_timeout = timeout-elapsed
+-                        continue
+-                    raise
+-                for fd, mode in ready:
+-                    if mode & poll_in_or_priority_flags:
+-                        i = max(0, len(self.cookedq)-n)
+-                        self.fill_rawq()
+-                        self.process_rawq()
+-                        i = self.cookedq.find(match, i)
+-                if timeout is not None:
+-                    elapsed = time() - time_start
+-                    if elapsed >= timeout:
+-                        break
+-                    call_timeout = timeout-elapsed
+-            poller.unregister(self)
+-        if i >= 0:
+-            i = i + n
+-            buf = self.cookedq[:i]
+-            self.cookedq = self.cookedq[i:]
+-            return buf
+-        return self.read_very_lazy()
+-
+-    def _read_until_with_select(self, match, timeout=None):
+-        """Read until a given string is encountered or until timeout.
+-
+-        The timeout is implemented using select.select().
+-        """
+         n = len(match)
+         self.process_rawq()
+         i = self.cookedq.find(match)
+@@ -646,79 +589,6 @@
+         results are undeterministic, and may depend on the I/O timing.
+ 
+         """
+-        if self._has_poll:
+-            return self._expect_with_poll(list, timeout)
+-        else:
+-            return self._expect_with_select(list, timeout)
+-
+-    def _expect_with_poll(self, expect_list, timeout=None):
+-        """Read until one from a list of a regular expressions matches.
+-
+-        This method uses select.poll() to implement the timeout.
+-        """
+-        re = None
+-        expect_list = expect_list[:]
+-        indices = range(len(expect_list))
+-        for i in indices:
+-            if not hasattr(expect_list[i], "search"):
+-                if not re: import re
+-                expect_list[i] = re.compile(expect_list[i])
+-        call_timeout = timeout
+-        if timeout is not None:
+-            from time import time
+-            time_start = time()
+-        self.process_rawq()
+-        m = None
+-        for i in indices:
+-            m = expect_list[i].search(self.cookedq)
+-            if m:
+-                e = m.end()
+-                text = self.cookedq[:e]
+-                self.cookedq = self.cookedq[e:]
+-                break
+-        if not m:
+-            poller = select.poll()
+-            poll_in_or_priority_flags = select.POLLIN | select.POLLPRI
+-            poller.register(self, poll_in_or_priority_flags)
+-            while not m and not self.eof:
+-                try:
+-                    ready = poller.poll(call_timeout)
+-                except select.error as e:
+-                    if e.errno == errno.EINTR:
+-                        if timeout is not None:
+-                            elapsed = time() - time_start
+-                            call_timeout = timeout-elapsed
+-                        continue
+-                    raise
+-                for fd, mode in ready:
+-                    if mode & poll_in_or_priority_flags:
+-                        self.fill_rawq()
+-                        self.process_rawq()
+-                        for i in indices:
+-                            m = expect_list[i].search(self.cookedq)
+-                            if m:
+-                                e = m.end()
+-                                text = self.cookedq[:e]
+-                                self.cookedq = self.cookedq[e:]
+-                                break
+-                if timeout is not None:
+-                    elapsed = time() - time_start
+-                    if elapsed >= timeout:
+-                        break
+-                    call_timeout = timeout-elapsed
+-            poller.unregister(self)
+-        if m:
+-            return (i, m, text)
+-        text = self.read_very_lazy()
+-        if not text and self.eof:
+-            raise EOFError
+-        return (-1, None, text)
+-
+-    def _expect_with_select(self, list, timeout=None):
+-        """Read until one from a list of a regular expressions matches.
+-
+-        The timeout is implemented using select.select().
+-        """
+         re = None
+         list = list[:]
+         indices = range(len(list))
+diff -urN a/Lib/test/test_telnetlib.py b/Lib/test/test_telnetlib.py
+--- a/Lib/test/test_telnetlib.py	2012-12-25 13:41:08.499405725 +0100
++++ b/Lib/test/test_telnetlib.py	2012-12-25 14:00:31.339404759 +0100
+@@ -136,28 +136,6 @@
+         self.assertEqual(data, want[0])
+         self.assertEqual(telnet.read_all(), 'not seen')
+ 
+-    def test_read_until_with_poll(self):
+-        """Use select.poll() to implement telnet.read_until()."""
+-        want = ['x' * 10, 'match', 'y' * 10, EOF_sigil]
+-        self.dataq.put(want)
+-        telnet = telnetlib.Telnet(HOST, self.port)
+-        if not telnet._has_poll:
+-            raise unittest.SkipTest('select.poll() is required')
+-        telnet._has_poll = True
+-        self.dataq.join()
+-        data = telnet.read_until('match')
+-        self.assertEqual(data, ''.join(want[:-2]))
+-
+-    def test_read_until_with_select(self):
+-        """Use select.select() to implement telnet.read_until()."""
+-        want = ['x' * 10, 'match', 'y' * 10, EOF_sigil]
+-        self.dataq.put(want)
+-        telnet = telnetlib.Telnet(HOST, self.port)
+-        telnet._has_poll = False
+-        self.dataq.join()
+-        data = telnet.read_until('match')
+-        self.assertEqual(data, ''.join(want[:-2]))
+-
+     def test_read_all_A(self):
+         """
+         read_all()
+@@ -380,75 +358,8 @@
+         self.assertEqual('', telnet.read_sb_data())
+         nego.sb_getter = None # break the nego => telnet cycle
+ 
+-
+-class ExpectTests(TestCase):
+-    def setUp(self):
+-        self.evt = threading.Event()
+-        self.dataq = Queue.Queue()
+-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+-        self.sock.settimeout(10)
+-        self.port = test_support.bind_port(self.sock)
+-        self.thread = threading.Thread(target=server, args=(self.evt,self.sock,
+-                                                            self.dataq))
+-        self.thread.start()
+-        self.evt.wait()
+-
+-    def tearDown(self):
+-        self.thread.join()
+-
+-    # use a similar approach to testing timeouts as test_timeout.py
+-    # these will never pass 100% but make the fuzz big enough that it is rare
+-    block_long = 0.6
+-    block_short = 0.3
+-    def test_expect_A(self):
+-        """
+-        expect(expected, [timeout])
+-          Read until the expected string has been seen, or a timeout is
+-          hit (default is no timeout); may block.
+-        """
+-        want = ['x' * 10, 'match', 'y' * 10, EOF_sigil]
+-        self.dataq.put(want)
+-        telnet = telnetlib.Telnet(HOST, self.port)
+-        self.dataq.join()
+-        (_,_,data) = telnet.expect(['match'])
+-        self.assertEqual(data, ''.join(want[:-2]))
+-
+-    def test_expect_B(self):
+-        # test the timeout - it does NOT raise socket.timeout
+-        want = ['hello', self.block_long, 'not seen', EOF_sigil]
+-        self.dataq.put(want)
+-        telnet = telnetlib.Telnet(HOST, self.port)
+-        self.dataq.join()
+-        (_,_,data) = telnet.expect(['not seen'], self.block_short)
+-        self.assertEqual(data, want[0])
+-        self.assertEqual(telnet.read_all(), 'not seen')
+-
+-    def test_expect_with_poll(self):
+-        """Use select.poll() to implement telnet.expect()."""
+-        want = ['x' * 10, 'match', 'y' * 10, EOF_sigil]
+-        self.dataq.put(want)
+-        telnet = telnetlib.Telnet(HOST, self.port)
+-        if not telnet._has_poll:
+-            raise unittest.SkipTest('select.poll() is required')
+-        telnet._has_poll = True
+-        self.dataq.join()
+-        (_,_,data) = telnet.expect(['match'])
+-        self.assertEqual(data, ''.join(want[:-2]))
+-
+-    def test_expect_with_select(self):
+-        """Use select.select() to implement telnet.expect()."""
+-        want = ['x' * 10, 'match', 'y' * 10, EOF_sigil]
+-        self.dataq.put(want)
+-        telnet = telnetlib.Telnet(HOST, self.port)
+-        telnet._has_poll = False
+-        self.dataq.join()
+-        (_,_,data) = telnet.expect(['match'])
+-        self.assertEqual(data, ''.join(want[:-2]))
+-
+-
+ def test_main(verbose=None):
+-    test_support.run_unittest(GeneralTests, ReadTests, OptionTests,
+-                              ExpectTests)
++    test_support.run_unittest(GeneralTests, ReadTests, OptionTests)
+ 
+ if __name__ == '__main__':
+     test_main()
+diff -urN a/Misc/ACKS b/Misc/ACKS
+--- a/Misc/ACKS	2012-12-25 13:48:09.675405378 +0100
++++ b/Misc/ACKS	2012-12-25 14:00:31.339404759 +0100
+@@ -372,7 +372,6 @@
+ Albert Hofkamp
+ Tomas Hoger
+ Jonathan Hogg
+-Akintayo Holder
+ Gerrit Holl
+ Shane Holloway
+ Rune Holm
+diff -urN a/Misc/NEWS b/Misc/NEWS
+--- a/Misc/NEWS	2012-12-25 13:48:48.947405345 +0100
++++ b/Misc/NEWS	2012-12-25 14:00:31.347404759 +0100
+@@ -123,9 +123,6 @@
+ - Issue #6493: An issue in ctypes on Windows that caused structure bitfields
+   of type ctypes.c_uint32 and width 32 to incorrectly be set has been fixed.
+ 
+-- Issue #14635: telnetlib will use poll() rather than select() when possible
+-  to avoid failing due to the select() file descriptor limit.
+-
+ - Issue #15247: FileIO now raises an error when given a file descriptor
+   pointing to a directory.
+ 
