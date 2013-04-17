@@ -57,10 +57,7 @@ pkg-define += $(foreach _,$(variants),-D builddir.$(_)="$(builddir.$(_))")
 
 pkg-define += -D sourcedir="$(sourcedir)"
 
-# Where to find files:
-pkg-protos = -d .
-pkg-protos += $(protodirs:%=-d "%")
-pkg-protos += $(foreach _,$(variants),-d "$(protodir.$(_))")
+protodirs += $(foreach _,$(variants),$(protodir.$(_)))
 
 transformations := \
 $(transdir)/defaults \
@@ -133,7 +130,11 @@ mogrify-stamp: $(mogrified-manifests)
 
 depend-manifests := $(manifests:%=$(manifestdir)/depend-%)
 $(manifestdir)/depend-% : $(manifestdir)/mogrified-%
-	pkgdepend generate -m $(pkg-protos) $< > $@ || (rm -f $@; exit 1)
+	@protos="-d ."; for p in $(protodirs); do \
+		   if [ -d $$p ]; then protos="$$protos -d $$p"; fi \
+		   done; \
+	   set -x; \
+		pkgdepend generate -m $$protos $< > $@ || (rm -f $@; exit 1)
 depend-stamp: $(depend-manifests)	
 	touch $@
 $(depend-manifests): install-stamp	

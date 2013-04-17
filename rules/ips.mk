@@ -39,9 +39,11 @@ pre-publish: resolve-stamp
 
 publish-stamp: pre-publish
 	@if [ -n "$(ips-repo)" ]; then \
+		protos="-d ."; for p in $(protodirs); do \
+			if [ -d $$p ]; then protos="$$protos -d $$p"; fi; done; \
 	set -x; \
 	for m in $(resolved-manifests); do \
-		pkgsend -s $(ips-repo) publish --fmri-in-manifest $(pkg-protos) $$m || exit 1; \
+		pkgsend -s $(ips-repo) publish --fmri-in-manifest $$protos $$m || exit 1; \
 	done; \
 	touch $@; \
 	else \
