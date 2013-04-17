@@ -28,6 +28,7 @@ build-depends += developer/versioning/mercurial
 
 download-stamp: check-build-dep-stamp
 unpack-stamp: download-stamp
+download = $(hg-url)
 
 download-stamp:
 	[ -d $(sourcedir) ] || hg clone $(hg-url) $(sourcedir)

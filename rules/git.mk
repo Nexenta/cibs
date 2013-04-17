@@ -28,6 +28,7 @@ build-depends += developer/versioning/git
 
 download-stamp: check-build-dep-stamp
 unpack-stamp: download-stamp
+download = $(git-url)
 
 download-stamp:
 	[ -d $(sourcedir) ] || git clone $(git-url) $(sourcedir)
