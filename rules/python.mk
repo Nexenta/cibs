@@ -35,9 +35,12 @@ configure-%-stamp:
 build-%-stamp:
 	touch $@
 
+# Install everything into single directory:
+install-%-stamp: protodir = work/proto/tmp
 install-%-stamp:
 	cd "$(sourcedir)" && \
-		$* setup.py install --install-layout=deb --no-compile -O0 --root="$(topdir)/$(protodir)"
+		$* setup.py install --install-layout=deb --no-compile -O0 --root="$(topdir)/$(protodir)" \
+		$(install-options)
 	touch $@
 
 __python_mk := included
